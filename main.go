@@ -12,16 +12,22 @@ import (
 )
 
 var (
-	db                 *gorm.DB                        = config.SetupDatabaseConnection()
-	jwtService         services.JWTService             = services.NewJWTService()
+	db *gorm.DB = config.SetupDatabaseConnection()
+
 	accountReponsitory repositories.AccountReponsitory = repositories.NewAccountReponsitory(db)
-	accountService     services.AccountService         = services.NewAccountService(accountReponsitory)
-	accountController  controllers.AccountController   = controllers.NewAccountController(accountService)
-	authService        services.AuthService            = services.NewAuthService(accountReponsitory)
-	authCtrl           controllers.AuthController      = controllers.NewAuthController(authService, jwtService)
 	sugbjectRepository repositories.SubjectRepository  = repositories.NewSubjectRepository(db)
-	subjectService     services.SubjectService         = services.NewSubjectService(sugbjectRepository)
-	subjectController  controllers.SubjectController   = controllers.NewSubjectController(subjectService)
+	newClassRepository repositories.NewClassRepository = repositories.NewNewClassRepository(db)
+
+	jwtService      services.JWTService      = services.NewJWTService()
+	accountService  services.AccountService  = services.NewAccountService(accountReponsitory)
+	subjectService  services.SubjectService  = services.NewSubjectService(sugbjectRepository)
+	authService     services.AuthService     = services.NewAuthService(accountReponsitory)
+	newClassService services.NewClassService = services.NewNewClassService(newClassRepository)
+
+	accountController  controllers.AccountController  = controllers.NewAccountController(accountService)
+	authCtrl           controllers.AuthController     = controllers.NewAuthController(authService, jwtService)
+	subjectController  controllers.SubjectController  = controllers.NewSubjectController(subjectService)
+	newClassController controllers.NewClassController = controllers.NewNewClassController(newClassService)
 )
 
 func main() {
@@ -48,6 +54,11 @@ func main() {
 		accountRoutes.POST("/index", accountController.InsertAccount)
 		accountRoutes.POST("/remove", accountController.DeleteAccount)
 		accountRoutes.POST("/edit", accountController.UpdateAccount)
+	}
+
+	newClassRoutes := r.Group("giasuae/v1/new_class")
+	{
+		newClassRoutes.POST("/index", newClassController.InsertNewClass)
 	}
 	r.Run()
 }

@@ -6,6 +6,7 @@ import (
 	"giasuaeapi/src/middleware"
 	"giasuaeapi/src/repositories"
 	"giasuaeapi/src/services"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -36,6 +37,9 @@ var (
 func main() {
 	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"data": "WELCOME TO GIASUANHEM ><"})
+	})
 
 	authRoutes := r.Group("giasuae/v1/auth")
 	{

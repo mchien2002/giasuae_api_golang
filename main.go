@@ -41,13 +41,13 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": "WELCOME TO GIASUANHEM ><"})
 	})
 
-	authRoutes := r.Group("giasuae/v1/auth")
+	authRoutes := r.Group("v1/auth")
 	{
 		authRoutes.POST("/login", authCtrl.Login)
 		authRoutes.POST("/register", authCtrl.Register)
 	}
 
-	subjectRoutes := r.Group("giasuae/v1/subject")
+	subjectRoutes := r.Group("v1/subject")
 	{
 		subjectRoutes.GET("/index", subjectController.FindAllSubject)
 		subjectRoutes.POST("/index", middleware.AuthorJWT(jwtService), subjectController.InsertSubject)
@@ -55,14 +55,14 @@ func main() {
 		subjectRoutes.POST("/edit", middleware.AuthorJWT(jwtService), subjectController.UpdateSubject)
 	}
 
-	classRoutes := r.Group("giasuae/v1/class")
+	classRoutes := r.Group("v1/class")
 	{
 		classRoutes.GET("/index", classController.FindAllClass)
 		classRoutes.POST("/index", classController.InsertClass)
 		classRoutes.POST("/remove", classController.InsertClass)
 		classRoutes.POST("/edit", classController.InsertClass)
 	}
-	accountRoutes := r.Group("giasuae/v1/account")
+	accountRoutes := r.Group("v1/account")
 	{
 		accountRoutes.GET("/index", accountController.FindAllAccount)
 		accountRoutes.GET("/filter", accountController.FindByID)
@@ -71,7 +71,7 @@ func main() {
 		accountRoutes.POST("/edit", accountController.UpdateAccount)
 	}
 
-	newClassRoutes := r.Group("giasuae/v1/new_class")
+	newClassRoutes := r.Group("v1/new_class")
 	{
 		newClassRoutes.GET("/index", newClassController.FindAllNewClass)
 		newClassRoutes.POST("/index", newClassController.InsertNewClass)

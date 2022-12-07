@@ -1,4 +1,4 @@
-package datepicker
+package date_picker
 
 import "time"
 

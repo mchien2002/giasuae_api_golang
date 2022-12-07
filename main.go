@@ -17,17 +17,20 @@ var (
 	accountReponsitory repositories.AccountReponsitory = repositories.NewAccountReponsitory(db)
 	sugbjectRepository repositories.SubjectRepository  = repositories.NewSubjectRepository(db)
 	newClassRepository repositories.NewClassRepository = repositories.NewNewClassRepository(db)
+	classRepository    repositories.ClassRepository    = repositories.NewClassITRepository(db)
 
 	jwtService      services.JWTService      = services.NewJWTService()
 	accountService  services.AccountService  = services.NewAccountService(accountReponsitory)
 	subjectService  services.SubjectService  = services.NewSubjectService(sugbjectRepository)
 	authService     services.AuthService     = services.NewAuthService(accountReponsitory)
 	newClassService services.NewClassService = services.NewNewClassService(newClassRepository)
+	classService    services.ClassService    = services.NewClassITService(classRepository)
 
 	accountController  controllers.AccountController  = controllers.NewAccountController(accountService)
 	authCtrl           controllers.AuthController     = controllers.NewAuthController(authService, jwtService)
 	subjectController  controllers.SubjectController  = controllers.NewSubjectController(subjectService)
 	newClassController controllers.NewClassController = controllers.NewNewClassController(newClassService)
+	classController    controllers.ClassController    = controllers.NewClassITController(classService)
 )
 
 func main() {
@@ -47,6 +50,14 @@ func main() {
 		subjectRoutes.GET("/id", subjectController.FindByID)
 		subjectRoutes.POST("/edit", middleware.AuthorJWT(jwtService), subjectController.UpdateSubject)
 	}
+
+	classRoutes := r.Group("giasuae/v1/class")
+	{
+		classRoutes.GET("/index", classController.FindAllClass)
+		classRoutes.POST("/index", classController.InsertClass)
+		classRoutes.POST("/remove", classController.InsertClass)
+		classRoutes.POST("/edit", classController.InsertClass)
+	}
 	accountRoutes := r.Group("giasuae/v1/account")
 	{
 		accountRoutes.GET("/index", accountController.FindAllAccount)
@@ -58,7 +69,10 @@ func main() {
 
 	newClassRoutes := r.Group("giasuae/v1/new_class")
 	{
+		newClassRoutes.GET("/index", newClassController.FindAllNewClass)
 		newClassRoutes.POST("/index", newClassController.InsertNewClass)
+		newClassRoutes.POST("/edit", newClassController.UpdateNewClass)
+		newClassRoutes.GET("/id", newClassController.FindByID)
 	}
 	r.Run()
 }

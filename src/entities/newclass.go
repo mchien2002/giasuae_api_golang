@@ -1,9 +1,9 @@
 package entities
 
-type NewClass struct {
-	ID         int       `json:"_id"`
+type Newclasses struct {
+	ID         int       `json:"id"`
 	Address    string    `json:"address"`
-	District   string    `json:"distrist"`
+	District   string    `json:"district"`
 	Sobuoi     int       `json:"sobuoi"`
 	Time       string    `json:"time"`
 	Salary     int       `json:"salary"`
@@ -19,8 +19,8 @@ type ClassesOfNewClass struct {
 	ID_newclass int `json:"id_newclass"`
 }
 
-type SubjectsOfNewClass struct {
-	ID_subject  int `json:"id_class"`
+type SubjectsOfNewclasses struct {
+	ID_subject  int `json:"id_subject"`
 	ID_newclass int `json:"id_newclass"`
 }
 

@@ -1,17 +1,19 @@
 package entities
 
 type Newclasses struct {
-	ID         int       `json:"id"`
-	Address    string    `json:"address"`
-	District   string    `json:"district"`
-	Sobuoi     int       `json:"sobuoi"`
-	Time       string    `json:"time"`
-	Salary     int       `json:"salary"`
-	Require    string    `json:"require"`
-	Status     int       `json:"status"`
-	Contact    string    `json:"contact"`
-	Created_at string    `json:"createdAt"`
-	Subjects   []Subject `json:"subjects"`
+	ID         int        `json:"id"`
+	Address    string     `json:"address"`
+	District   string     `json:"district"`
+	Sobuoi     int        `json:"sobuoi"`
+	Time       string     `json:"time"`
+	Salary     int        `json:"salary"`
+	Require    string     `json:"require"`
+	Status     int        `json:"status"`
+	Contact    string     `json:"contact"`
+	Created_at string     `json:"createdAt"`
+	Subjects   []Subject  `json:"subjects"`
+	Classes    []Class    `json:"classes"`
+	Categories []Category `json:"categories"`
 }
 
 type ClassesOfNewClass struct {

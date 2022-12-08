@@ -7,8 +7,8 @@ import (
 
 type ClassService interface {
 	InsertClass(c *entities.Class) error
-	UpdateClass(c *entities.Class)
-	DeleteClass(c *entities.Class)
+	UpdateClass(c *entities.Class) error
+	DeleteClass(c *entities.Class) error
 	FindAllClass() []entities.Class
 	FindByID(id int) entities.Class
 }
@@ -17,7 +17,7 @@ type classService struct {
 }
 
 // DeleteClass implements ClassService
-func (svc *classService) DeleteClass(s *entities.Class) {
+func (svc *classService) DeleteClass(s *entities.Class) error {
 	panic("unimplemented")
 }
 
@@ -37,7 +37,7 @@ func (svc *classService) InsertClass(c *entities.Class) error {
 }
 
 // UpdateClass implements ClassService
-func (svc *classService) UpdateClass(c *entities.Class) {
+func (svc *classService) UpdateClass(c *entities.Class) error {
 	panic("unimplemented")
 }
 

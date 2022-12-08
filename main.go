@@ -19,6 +19,7 @@ var (
 	sugbjectRepository repositories.SubjectRepository  = repositories.NewSubjectRepository(db)
 	newClassRepository repositories.NewClassRepository = repositories.NewNewClassRepository(db)
 	classRepository    repositories.ClassRepository    = repositories.NewClassITRepository(db)
+	categoryRepository repositories.CategoryRepository = repositories.NewCategoryRepository(db)
 
 	jwtService      services.JWTService      = services.NewJWTService()
 	accountService  services.AccountService  = services.NewAccountService(accountReponsitory)
@@ -26,12 +27,14 @@ var (
 	authService     services.AuthService     = services.NewAuthService(accountReponsitory)
 	newClassService services.NewClassService = services.NewNewClassService(newClassRepository)
 	classService    services.ClassService    = services.NewClassITService(classRepository)
+	categoryService services.CategoryService = services.NewCategoryService(categoryRepository)
 
 	accountController  controllers.AccountController  = controllers.NewAccountController(accountService)
 	authCtrl           controllers.AuthController     = controllers.NewAuthController(authService, jwtService)
 	subjectController  controllers.SubjectController  = controllers.NewSubjectController(subjectService)
 	newClassController controllers.NewClassController = controllers.NewNewClassController(newClassService)
 	classController    controllers.ClassController    = controllers.NewClassITController(classService)
+	categoryController controllers.CategoryController = controllers.NewCategoryController(categoryService)
 )
 
 func main() {
@@ -61,6 +64,16 @@ func main() {
 		classRoutes.POST("/index", classController.InsertClass)
 		classRoutes.POST("/remove", classController.InsertClass)
 		classRoutes.POST("/edit", classController.InsertClass)
+		classRoutes.GET("/id", classController.FindByID)
+	}
+
+	categoryRoutes := r.Group("v1/category")
+	{
+		categoryRoutes.GET("/index", categoryController.FindAllCategory)
+		categoryRoutes.GET("/id", categoryController.FindByID)
+		categoryRoutes.POST("/index", categoryController.InsertCategory)
+		categoryRoutes.POST("/edit", categoryController.UpdateCategory)
+		categoryRoutes.POST("/remove", categoryController.DeleteCategory)
 	}
 	accountRoutes := r.Group("v1/account")
 	{

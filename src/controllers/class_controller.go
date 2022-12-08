@@ -6,6 +6,7 @@ import (
 	"giasuaeapi/src/helper"
 	"giasuaeapi/src/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +37,13 @@ func (ctrl *classController) FindAllClass(context *gin.Context) {
 
 // FindByID implements ClassController
 func (ctrl *classController) FindByID(context *gin.Context) {
-	var classes []entities.Class = ctrl.ClassService.FindAllClass()
+	id, err := strconv.ParseInt(context.Query("id"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không tìm thấy id", err.Error(), helper.EmptyObjec{})
+		context.JSON(http.StatusBadRequest, res)
+		return
+	}
+	var classes entities.Class = ctrl.ClassService.FindByID(int(id))
 	res := helper.BuildResponse(true, "OK", classes)
 	context.JSON(http.StatusOK, res)
 }

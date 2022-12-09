@@ -1,8 +1,7 @@
 package controllers
 
 import (
-	datepicker "giasuaeapi/src/date_picker"
-	"giasuaeapi/src/dto"
+	"giasuaeapi/src/date_picker"
 	"giasuaeapi/src/entities"
 	"giasuaeapi/src/helper"
 	"giasuaeapi/src/services"
@@ -38,7 +37,7 @@ func (ctr *authController) Login(cx *gin.Context) {
 		res := helper.BuildResponseError("Đăng nhập thất bại", "", helper.EmptyObjec{})
 		cx.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
-	} else if acc, ok := value.(dto.AccountWithToken); ok {
+	} else if acc, ok := value.(entities.AccountWithToken); ok {
 		acc.Token = ctr.JWTService.GenerateToken(strconv.Itoa(acc.ID))
 		res := helper.BuildResponse(true, "Đăng nhập thành công", acc)
 		cx.JSON(http.StatusOK, res)
@@ -49,7 +48,7 @@ func (ctr *authController) Login(cx *gin.Context) {
 // Register implements AuthController
 func (ctrl *authController) Register(cx *gin.Context) {
 	var acc entities.Account = entities.Account{
-		Created_at: datepicker.FormatDataNow(),
+		Created_at: date_picker.FormatDataNow(),
 	}
 	err := cx.ShouldBind(&acc)
 	if err != nil {

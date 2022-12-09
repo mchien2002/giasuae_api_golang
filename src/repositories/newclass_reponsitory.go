@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"giasuaeapi/src/dto"
 	"giasuaeapi/src/entities"
 
 	"github.com/mashingan/smapping"
@@ -9,11 +8,11 @@ import (
 )
 
 type NewClassRepository interface {
-	InsertNewClass(nc *dto.NewClassesReq) error
-	UpdateNewClass(nc *dto.NewClassesReq) error
-	DeleteNewClass(nc *entities.Newclasses) error
-	FindAllNewClass() []entities.Newclasses
-	FindByID(id int) entities.Newclasses
+	InsertNewClass(nc *entities.NewClassesReq) error
+	UpdateNewClass(nc *entities.NewClassesReq) error
+	DeleteNewClass(nc *entities.NewclassesDetail) error
+	FindAllNewClass() []entities.NewclassesDetail
+	FindByID(id int) entities.NewclassesDetail
 }
 
 type newClassConnection struct {
@@ -21,31 +20,32 @@ type newClassConnection struct {
 }
 
 // DeleteNewClass implements NewClassRepository
-func (db *newClassConnection) DeleteNewClass(nc *entities.Newclasses) error {
+func (db *newClassConnection) DeleteNewClass(nc *entities.NewclassesDetail) error {
 	panic("unimplemented")
 }
 
 // FindAllNewClass implements NewClassRepository
-func (db *newClassConnection) FindAllNewClass() []entities.Newclasses {
-	var newclasses []entities.Newclasses
+func (db *newClassConnection) FindAllNewClass() []entities.NewclassesDetail {
+	var newclasses []entities.NewclassesDetail
 	db.connection.Table("newclasses").Scan(&newclasses)
-	for index := range newclasses {
-		newclasses[index].Subjects = getListSubjectOfNC(db, newclasses[index].ID)
-	}
 	return newclasses
 }
 
 // FindByID implements NewClassRepository
-func (db *newClassConnection) FindByID(id int) entities.Newclasses {
-	var newclass entities.Newclasses
-	db.connection.Limit(1).Table("newclasses").Where("id = ?", id).Scan(&newclass)
-	newclass.Subjects = getListSubjectOfNC(db, id)
-	return newclass
+func (db *newClassConnection) FindByID(id int) entities.NewclassesDetail {
+	var newclasses entities.NewclassesDetail
+	db.connection.Limit(1).Table("newclasses").Where("id = ?", id).Scan(&newclasses)
+	newclasses.Subjects = getListSubjectOfNC(db, id)
+	newclasses.Classes = getListClassOfNC(db, id)
+	newclasses.Categories = getListCategoryOfNC(db, id)
+	return newclasses
 }
 
 // InsertNewClass implements NewClassRepository
-func (db *newClassConnection) InsertNewClass(nc *dto.NewClassesReq) error {
+func (db *newClassConnection) InsertNewClass(nc *entities.NewClassesReq) error {
 	var subOfNC []entities.SubjectsOfNewclasses
+	var classOfNC []entities.ClassesOfNewclasses
+	var ctgOfNC []entities.CategoriesOfNewclasses
 	db.connection.Table("newclasses").Create(&nc)
 	for _, value := range nc.Subjects {
 		subOfNC = append(subOfNC, entities.SubjectsOfNewclasses{
@@ -53,18 +53,36 @@ func (db *newClassConnection) InsertNewClass(nc *dto.NewClassesReq) error {
 			ID_subject:  value,
 		})
 	}
+	for _, value := range nc.Classes {
+		classOfNC = append(classOfNC, entities.ClassesOfNewclasses{
+			ID_newclass: nc.ID,
+			ID_class:    value,
+		})
+	}
+	for _, value := range nc.Categories {
+		ctgOfNC = append(ctgOfNC, entities.CategoriesOfNewclasses{
+			ID_newclass: nc.ID,
+			ID_category: value,
+		})
+	}
 	db.connection.Create(&subOfNC)
+	db.connection.Create(&classOfNC)
+	db.connection.Create(&ctgOfNC)
 	return nil
 }
 
 // UpdateNewClass implements NewClassRepository
-func (db *newClassConnection) UpdateNewClass(nc *dto.NewClassesReq) error {
+func (db *newClassConnection) UpdateNewClass(nc *entities.NewClassesReq) error {
 	delListSubjectOfNC(db, nc.ID)
-	var newClassSet dto.NewclasssesSet
+	delListClassOfNC(db, nc.ID)
+	delListCategoryOfNC(db, nc.ID)
+	var newClassSet entities.NewclasssesSet
 	var subOfNC []entities.SubjectsOfNewclasses
+	var clasOfNC []entities.ClassesOfNewclasses
+	var ctgOfNC []entities.CategoriesOfNewclasses
 	smapping.FillStruct(&newClassSet, smapping.MapFields(&nc))
 	err := db.connection.Table("newclasses").Save(&newClassSet)
-	if err.Error !=  nil{
+	if err.Error != nil {
 		return err.Error
 	}
 	for _, value := range nc.Subjects {
@@ -73,9 +91,29 @@ func (db *newClassConnection) UpdateNewClass(nc *dto.NewClassesReq) error {
 			ID_subject:  value,
 		})
 	}
+	for _, value := range nc.Classes {
+		clasOfNC = append(clasOfNC, entities.ClassesOfNewclasses{
+			ID_newclass: nc.ID,
+			ID_class:    value,
+		})
+	}
+	for _, value := range nc.Categories {
+		ctgOfNC = append(ctgOfNC, entities.CategoriesOfNewclasses{
+			ID_newclass: nc.ID,
+			ID_category: value,
+		})
+	}
 
 	err1 := db.connection.Table("subjects_of_newclasses").Save(&subOfNC)
+	err2 := db.connection.Table("subjects_of_newclasses").Save(&clasOfNC)
+	err3 := db.connection.Table("subjects_of_newclasses").Save(&ctgOfNC)
 	if err1.Error != nil {
+		return err1.Error
+	}
+	if err2.Error != nil {
+		return err1.Error
+	}
+	if err3.Error != nil {
 		return err1.Error
 	}
 	return nil
@@ -92,7 +130,23 @@ func getListSubjectOfNC(db *newClassConnection, ncId int) []entities.Subject {
 	db.connection.Table("subjects").Joins("inner join subjects_of_newclasses on id_newclass = ?", ncId).Where("id = id_subject").Scan(&subjects)
 	return subjects
 }
+func getListClassOfNC(db *newClassConnection, ncId int) []entities.Class {
+	var classes []entities.Class
+	db.connection.Table("classes").Joins("inner join classes_of_newclasses on id_newclass = ?", ncId).Where("id = id_class").Scan(&classes)
+	return classes
+}
+func getListCategoryOfNC(db *newClassConnection, ncId int) []entities.Category {
+	var categories []entities.Category
+	db.connection.Table("categories").Joins("inner join categories_of_newclasses on id_newclass = ?", ncId).Where("id = id_category").Scan(&categories)
+	return categories
+}
 
 func delListSubjectOfNC(db *newClassConnection, ncId int) {
 	db.connection.Table("subjects_of_newclasses").Where("id_newclass = ?", ncId).Delete(&entities.SubjectsOfNewclasses{})
+}
+func delListClassOfNC(db *newClassConnection, ncId int) {
+	db.connection.Table("classes_of_newclasses").Where("id_newclass = ?", ncId).Delete(&entities.ClassesOfNewclasses{})
+}
+func delListCategoryOfNC(db *newClassConnection, ncId int) {
+	db.connection.Table("categories_of_newclasses").Where("id_newclass = ?", ncId).Delete(&entities.CategoriesOfNewclasses{})
 }

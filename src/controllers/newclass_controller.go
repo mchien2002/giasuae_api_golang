@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"giasuaeapi/src/date_picker"
-	"giasuaeapi/src/dto"
 	"giasuaeapi/src/entities"
 	"giasuaeapi/src/helper"
 	"giasuaeapi/src/services"
@@ -31,14 +30,14 @@ func (*newClassController) DeleteNewClass(context *gin.Context) {
 
 // FindAllNewClass implements NewClassController
 func (ctrl *newClassController) FindAllNewClass(context *gin.Context) {
-	var newclasses []entities.Newclasses = ctrl.NewClassService.FindAllNewClass()
+	var newclasses []entities.NewclassesDetail = ctrl.NewClassService.FindAllNewClass()
 	res := helper.BuildResponse(true, "OK", newclasses)
 	context.JSON(http.StatusOK, res)
 }
 
 // FindByID implements NewClassController
 func (ctrl *newClassController) FindByID(context *gin.Context) {
-	var newclass entities.Newclasses
+	var newclass entities.NewclassesDetail
 	id, err := strconv.ParseInt(context.Query("id"), 0, 0)
 	if err != nil {
 		res := helper.BuildResponseError("Không có id được tìm thấy", err.Error(), helper.EmptyObjec{})
@@ -53,7 +52,7 @@ func (ctrl *newClassController) FindByID(context *gin.Context) {
 
 // InsertNewClass implements NewClassController
 func (ctrl *newClassController) InsertNewClass(context *gin.Context) {
-	var nc dto.NewClassesReq = dto.NewClassesReq{
+	var nc entities.NewClassesReq = entities.NewClassesReq{
 		Created_at: date_picker.FormatDataNow(),
 	}
 
@@ -75,7 +74,7 @@ func (ctrl *newClassController) InsertNewClass(context *gin.Context) {
 
 // UpdateNewClass implements NewClassController
 func (ctrl *newClassController) UpdateNewClass(context *gin.Context) {
-	var newclass dto.NewClassesReq
+	var newclass entities.NewClassesReq
 	if err := context.ShouldBind(&newclass); err != nil {
 		res := helper.BuildResponseError("Sai cú pháp", err.Error(), helper.EmptyObjec{})
 		context.JSON(http.StatusBadRequest, res)

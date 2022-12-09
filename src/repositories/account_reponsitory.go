@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"giasuaeapi/src/dto"
 	"giasuaeapi/src/entities"
 	"log"
 
@@ -27,7 +26,7 @@ type accountReponsitory struct {
 // VerifyCredential implements AccountReponsitory
 func (db *accountReponsitory) VerifyCredential(username string) interface{} {
 	var acc entities.Account
-	accToken := dto.AccountWithToken{}
+	accToken := entities.AccountWithToken{}
 	res := db.connection.Where("username = ?", username).Take(&acc)
 	if res.Error == nil {
 		error := smapping.FillStruct(&accToken, smapping.MapFields(&acc))

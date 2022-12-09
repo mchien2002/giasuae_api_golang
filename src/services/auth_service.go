@@ -1,7 +1,6 @@
 package services
 
 import (
-	"giasuaeapi/src/dto"
 	"giasuaeapi/src/entities"
 	"giasuaeapi/src/repositories"
 	"log"
@@ -28,7 +27,7 @@ func (svc *authService) CreateUser(user *entities.Account) {
 // VerifyCredential implements AuthService
 func (svc *authService) VerifyCredential(username string, password string, role int) interface{} {
 	res := svc.AcountRepository.VerifyCredential(username)
-	if acv, ok := res.(dto.AccountWithToken); ok {
+	if acv, ok := res.(entities.AccountWithToken); ok {
 		isComparePass := comparePass(acv.Password, []byte(password))
 		if acv.Email == username && isComparePass && acv.Role == role {
 			return res

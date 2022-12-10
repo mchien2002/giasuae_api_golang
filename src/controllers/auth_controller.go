@@ -31,10 +31,10 @@ func (ctr *authController) Login(cx *gin.Context) {
 		cx.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
-	value := ctr.AuthService.VerifyCredential(username, password, int(role))
+	value, err := ctr.AuthService.VerifyCredential(username, password, int(role))
 
-	if value == false {
-		res := helper.BuildResponseError("Đăng nhập thất bại", "", helper.EmptyObjec{})
+	if err != nil {
+		res := helper.BuildResponseError(err.Error(), err.Error(), helper.EmptyObjec{})
 		cx.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	} else if acc, ok := value.(entities.AccountWithToken); ok {

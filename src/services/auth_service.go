@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"giasuaeapi/src/entities"
 	"giasuaeapi/src/repositories"
 	"log"
@@ -9,7 +10,7 @@ import (
 )
 
 type AuthService interface {
-	VerifyCredential(usernam string, password string, role int) interface{}
+	VerifyCredential(usernam string, password string, role int) (interface{}, error)
 	CreateUser(user *entities.Account)
 	// FindByEmail(email string) entity.User
 	// IsDuplicateEmail(email string) bool
@@ -25,17 +26,22 @@ func (svc *authService) CreateUser(user *entities.Account) {
 }
 
 // VerifyCredential implements AuthService
-func (svc *authService) VerifyCredential(username string, password string, role int) interface{} {
+func (svc *authService) VerifyCredential(username string, password string, role int) (interface{}, error) {
 	res := svc.AcountRepository.VerifyCredential(username)
+	if res == false {
+		return nil, fmt.Errorf("Không tìm thấy tên tài khoản")
+	}
 	if acv, ok := res.(entities.AccountWithToken); ok {
 		isComparePass := comparePass(acv.Password, []byte(password))
-		if acv.Email == username && isComparePass && acv.Role == role {
-			return res
-		} else {
-			return false
+		if !isComparePass {
+			return nil, fmt.Errorf("Sai mật khẩu")
+		} else if acv.State == 0 {
+			return nil, fmt.Errorf("Tài khoản bị khóa")
+		} else if acv.Role != role {
+			return nil, fmt.Errorf("Bạn đăng nhập sai quyền hạn")
 		}
 	}
-	return false
+	return res, nil
 }
 
 func NewAuthService(accRepo repositories.AccountReponsitory) AuthService {

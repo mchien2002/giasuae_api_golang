@@ -20,6 +20,8 @@ var (
 	newClassRepository repositories.NewClassRepository = repositories.NewNewClassRepository(db)
 	classRepository    repositories.ClassRepository    = repositories.NewClassITRepository(db)
 	categoryRepository repositories.CategoryRepository = repositories.NewCategoryRepository(db)
+	postRepository     repositories.PostRepository     = repositories.NewPostRepository(db)
+	transRepository    repositories.TransRepository    = repositories.NewTransRepository(db)
 
 	jwtService      services.JWTService      = services.NewJWTService()
 	accountService  services.AccountService  = services.NewAccountService(accountReponsitory)
@@ -28,6 +30,8 @@ var (
 	newClassService services.NewClassService = services.NewNewClassService(newClassRepository)
 	classService    services.ClassService    = services.NewClassITService(classRepository)
 	categoryService services.CategoryService = services.NewCategoryService(categoryRepository)
+	postService     services.PostService     = services.NewPostService(postRepository)
+	transService    services.TransService    = services.NewTransService(transRepository)
 
 	accountController  controllers.AccountController  = controllers.NewAccountController(accountService)
 	authCtrl           controllers.AuthController     = controllers.NewAuthController(authService, jwtService)
@@ -35,6 +39,8 @@ var (
 	newClassController controllers.NewClassController = controllers.NewNewClassController(newClassService)
 	classController    controllers.ClassController    = controllers.NewClassITController(classService)
 	categoryController controllers.CategoryController = controllers.NewCategoryController(categoryService)
+	postController     controllers.PostController     = controllers.NewPostController(postService)
+	transController    controllers.TransController    = controllers.NewTransController(transService)
 )
 
 func main() {
@@ -90,6 +96,21 @@ func main() {
 		newClassRoutes.POST("/index", newClassController.InsertNewClass)
 		newClassRoutes.POST("/edit", newClassController.UpdateNewClass)
 		newClassRoutes.GET("/id", newClassController.FindByID)
+	}
+
+	postRoutes := r.Group("v1/post")
+	{
+		postRoutes.GET("/index", postController.FindAllPost)
+		postRoutes.POST("/index", postController.InsertPost)
+		postRoutes.POST("/edit", postController.UpdatePost)
+		postRoutes.POST("/remove", postController.DeletePost)
+		postRoutes.GET("/id", postController.FindByID)
+	}
+	transRoutes := r.Group("v1/trans")
+	{
+		transRoutes.GET("/index", transController.FindAllTrans)
+		transRoutes.POST("/index", transController.InsertTrans)
+		transRoutes.POST("/id", transController.FindByIDAcc)
 	}
 	r.Run()
 }

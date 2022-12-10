@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	datepicker "giasuaeapi/src/date_picker"
+	"giasuaeapi/src/date_picker"
 	"giasuaeapi/src/entities"
 	"giasuaeapi/src/helper"
 	"giasuaeapi/src/services"
@@ -60,7 +60,7 @@ func (ctrl *accountController) FindByID(context *gin.Context) {
 // InsertAccount implements AccountController
 func (ctrl *accountController) InsertAccount(context *gin.Context) {
 	var acc entities.Account = entities.Account{
-		Created_at: datepicker.FormatDataNow(),
+		Created_at: date_picker.FormatDataNow(),
 	}
 
 	err := context.ShouldBind(&acc)

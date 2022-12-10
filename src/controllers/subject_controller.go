@@ -56,7 +56,7 @@ func (ctrl *subjectController) InsertSubject(context *gin.Context) {
 
 	err := context.BindJSON(&sub)
 	if err != nil {
-		res := helper.BuildResponseError("Thêm môn học thất bại", err.Error(), helper.EmptyObjec{})
+		res := helper.BuildResponseError("Sai cú pháp", err.Error(), helper.EmptyObjec{})
 		context.JSON(http.StatusBadRequest, res)
 		return
 	}

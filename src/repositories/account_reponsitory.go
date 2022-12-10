@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"giasuaeapi/src/entities"
 	"log"
 
@@ -28,6 +29,7 @@ func (db *accountReponsitory) VerifyCredential(username string) interface{} {
 	var acc entities.Account
 	accToken := entities.AccountWithToken{}
 	res := db.connection.Where("username = ?", username).Take(&acc)
+	fmt.Println(acc)
 	if res.Error == nil {
 		error := smapping.FillStruct(&accToken, smapping.MapFields(&acc))
 		if error != nil {
@@ -75,7 +77,7 @@ func NewAccountReponsitory(dbConn *gorm.DB) AccountReponsitory {
 }
 
 func hashPass(pss []byte) string {
-	hash, err := bcrypt.GenerateFromPassword(pss, 13)
+	hash, err := bcrypt.GenerateFromPassword(pss, 15)
 	if err != nil {
 		log.Println(err)
 		panic("Failed to hash password")

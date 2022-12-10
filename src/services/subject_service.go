@@ -7,7 +7,7 @@ import (
 
 type SubjectService interface {
 	InsertSubject(s *entities.Subject) error
-	UpdateSubject(s *entities.Subject)
+	UpdateSubject(s *entities.Subject) error
 	DeleteSubject(s *entities.Subject)
 	FindAllSubject() []entities.Subject
 	FindByID(id int) entities.Subject
@@ -32,13 +32,13 @@ func (subRepo *subjectService) FindByID(id int) entities.Subject {
 }
 
 // InsertSubject implements SubjectService
-func (subRepo *subjectService) InsertSubject(s *entities.Subject) error{
+func (subRepo *subjectService) InsertSubject(s *entities.Subject) error {
 	return subRepo.SubjectRepository.InsertSubject(s)
 }
 
 // UpdateSubject implements SubjectService
-func (svc *subjectService) UpdateSubject(s *entities.Subject) {
-	svc.SubjectRepository.UpdateSubject(s)
+func (svc *subjectService) UpdateSubject(s *entities.Subject) error {
+	return svc.SubjectRepository.UpdateSubject(s)
 }
 
 func NewSubjectService(subRepo repositories.SubjectRepository) SubjectService {

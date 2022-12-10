@@ -76,7 +76,7 @@ func (ctrl *subjectController) UpdateSubject(context *gin.Context) {
 
 	err := context.ShouldBind(&sub)
 	if err != nil {
-		res := helper.BuildResponseError("Cập nhật môn học thất bại", err.Error(), helper.EmptyObjec{})
+		res := helper.BuildResponseError("Sai cú pháp", err.Error(), helper.EmptyObjec{})
 		context.JSON(http.StatusBadRequest, res)
 		return
 	}

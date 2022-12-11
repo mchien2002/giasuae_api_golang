@@ -6,5 +6,5 @@ type Transactionhistories struct {
 	Content    string      `json:"content"`
 	ID_account interface{} `json:"id_account"`
 	Status     int         `json:"status"`
-	Created_at string      `json:"createdAt"`
+	Created_at string      `json:"created_at"`
 }

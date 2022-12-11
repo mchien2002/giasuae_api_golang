@@ -7,7 +7,7 @@ type Account struct {
 	Password   string `json:"password"`
 	Role       int    `json:"role"`
 	State      int    `json:"state"`
-	Created_at string `json:"createdAt"`
+	Created_at string `json:"created_at"`
 }
 
 type AccountWithToken struct {

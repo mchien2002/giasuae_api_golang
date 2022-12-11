@@ -10,7 +10,7 @@ type NewclassesDetail struct {
 	Require    string     `json:"require"`
 	Status     int        `json:"status"`
 	Contact    string     `json:"contact"`
-	Created_at string     `json:"createdAt"`
+	Created_at string     `json:"created_at"`
 	Subjects   []Subject  `json:"subjects"`
 	Classes    []Class    `json:"classes"`
 	Categories []Category `json:"categories"`
@@ -44,7 +44,7 @@ type NewclasssesSet struct {
 	Subjects   string `json:"subjects"`
 	Classes    string `json:"classes"`
 	Categories string `json:"categories"`
-	Created_at string `json:"createdAt"`
+	Created_at string `json:"created_at"`
 }
 
 type NewClassesReq struct {
@@ -57,7 +57,7 @@ type NewClassesReq struct {
 	Require    string `json:"require"`
 	Status     int    `json:"status"`
 	Contact    string `json:"contact"`
-	Created_at string `json:"createdAt"`
+	Created_at string `json:"created_at"`
 	Subjects   []int  `json:"subjects"`
 	Classes    []int  `json:"classes"`
 	Categories []int  `json:"categories"`

@@ -8,5 +8,5 @@ type Salaryinfo struct {
 	Four_sessions  string      `json:"four_sessions"`
 	Five_sessions  string      `json:"five_sessions"`
 	ID_category    interface{} `json:"id_category"`
-	Created_at     string      `json:"createdAt"`
+	Created_at     string      `json:"created_at"`
 }

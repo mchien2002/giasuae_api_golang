@@ -46,7 +46,7 @@ func (ctrl *accountController) FindAllAccount(context *gin.Context) {
 
 // FindByID implements AccountController
 func (ctrl *accountController) FindByID(context *gin.Context) {
-	id, err := strconv.ParseUint(context.Query("_id"), 0, 0)
+	id, err := strconv.ParseUint(context.Query("id"), 0, 0)
 	if err != nil {
 		res := helper.BuildResponseError("Không có id được tìm thấy", err.Error(), helper.EmptyObjec{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)

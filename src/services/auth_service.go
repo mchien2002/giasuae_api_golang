@@ -11,7 +11,7 @@ import (
 
 type AuthService interface {
 	VerifyCredential(usernam string, password string) (interface{}, error)
-	CreateUser(user *entities.Account)
+	CreateUser(user *entities.Account) error
 	// FindByEmail(email string) entity.User
 	// IsDuplicateEmail(email string) bool
 }
@@ -21,8 +21,8 @@ type authService struct {
 }
 
 // CreateUser implements AuthService
-func (svc *authService) CreateUser(user *entities.Account) {
-	svc.AcountRepository.InsertAccount(user)
+func (svc *authService) CreateUser(user *entities.Account) error {
+	return svc.AcountRepository.InsertAccount(user)
 }
 
 // VerifyCredential implements AuthService

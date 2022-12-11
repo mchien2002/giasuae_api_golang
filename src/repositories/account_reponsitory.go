@@ -12,7 +12,7 @@ import (
 )
 
 type AccountReponsitory interface {
-	InsertAccount(acc *entities.Account)
+	InsertAccount(acc *entities.Account) error
 	UpdateAccount(acc *entities.Account)
 	DeleteAccount(acc *entities.Account)
 	FindAllAccount() []entities.Account
@@ -60,9 +60,13 @@ func (db *accountReponsitory) FindAllAccount() []entities.Account {
 }
 
 // InsertAccount implements AccountReponsitory
-func (db *accountReponsitory) InsertAccount(acc *entities.Account) {
+func (db *accountReponsitory) InsertAccount(acc *entities.Account) error{
 	acc.Password = hashPass([]byte(acc.Password))
-	db.connection.Save(&acc)
+	err:=db.connection.Save(&acc)
+	if err.Error!=nil{
+		return err.Error
+	}
+	return nil
 }
 
 // UpdateAccount implements AccountReponsitory

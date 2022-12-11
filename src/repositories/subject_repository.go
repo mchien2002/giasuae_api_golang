@@ -49,7 +49,7 @@ func (db *subjectConnection) InsertSubject(s *entities.Subject) error {
 // UpdateSubject implements SubjectRepository
 func (db *subjectConnection) UpdateSubject(s *entities.Subject) error {
 	err := db.connection.Save(&s)
-	if err != nil {
+	if err.Error != nil {
 		return err.Error
 	}
 	return nil

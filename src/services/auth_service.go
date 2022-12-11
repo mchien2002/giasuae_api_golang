@@ -10,7 +10,7 @@ import (
 )
 
 type AuthService interface {
-	VerifyCredential(usernam string, password string, role int) (interface{}, error)
+	VerifyCredential(usernam string, password string) (interface{}, error)
 	CreateUser(user *entities.Account)
 	// FindByEmail(email string) entity.User
 	// IsDuplicateEmail(email string) bool
@@ -26,7 +26,7 @@ func (svc *authService) CreateUser(user *entities.Account) {
 }
 
 // VerifyCredential implements AuthService
-func (svc *authService) VerifyCredential(username string, password string, role int) (interface{}, error) {
+func (svc *authService) VerifyCredential(username string, password string) (interface{}, error) {
 	res := svc.AcountRepository.VerifyCredential(username)
 	if res == false {
 		return nil, fmt.Errorf("Không tìm thấy tên tài khoản")
@@ -37,8 +37,6 @@ func (svc *authService) VerifyCredential(username string, password string, role 
 			return nil, fmt.Errorf("Sai mật khẩu")
 		} else if acv.State == 0 {
 			return nil, fmt.Errorf("Tài khoản bị khóa")
-		} else if acv.Role != role {
-			return nil, fmt.Errorf("Bạn đăng nhập sai quyền hạn")
 		}
 	}
 	return res, nil

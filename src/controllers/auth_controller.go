@@ -25,13 +25,7 @@ type authController struct {
 func (ctr *authController) Login(cx *gin.Context) {
 	username := cx.Query("username")
 	password := cx.Query("password")
-	role, err := strconv.ParseInt(cx.Query("role"), 0, 0)
-	if err != nil {
-		res := helper.BuildResponseError("Không tìm thấy bạn là ai", err.Error(), helper.EmptyObjec{})
-		cx.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return
-	}
-	value, err := ctr.AuthService.VerifyCredential(username, password, int(role))
+	value, err := ctr.AuthService.VerifyCredential(username, password)
 
 	if err != nil {
 		res := helper.BuildResponseError(err.Error(), err.Error(), helper.EmptyObjec{})

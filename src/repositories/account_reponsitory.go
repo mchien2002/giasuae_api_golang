@@ -17,7 +17,7 @@ type AccountReponsitory interface {
 	DeleteAccount(acc *entities.Account)
 	FindAllAccount() []entities.Account
 	VerifyCredential(username string) interface{}
-	FindByID(id uint64) entities.Account
+	FindByID(id int) entities.Account
 }
 
 type accountReponsitory struct {
@@ -41,7 +41,7 @@ func (db *accountReponsitory) VerifyCredential(username string) interface{} {
 }
 
 // FilterAccount implements AccountReponsitory
-func (db *accountReponsitory) FindByID(id uint64) entities.Account {
+func (db *accountReponsitory) FindByID(id int) entities.Account {
 	var acc entities.Account
 	db.connection.First(&acc, id)
 	return acc
@@ -60,10 +60,10 @@ func (db *accountReponsitory) FindAllAccount() []entities.Account {
 }
 
 // InsertAccount implements AccountReponsitory
-func (db *accountReponsitory) InsertAccount(acc *entities.Account) error{
+func (db *accountReponsitory) InsertAccount(acc *entities.Account) error {
 	acc.Password = hashPass([]byte(acc.Password))
-	err:=db.connection.Save(&acc)
-	if err.Error!=nil{
+	err := db.connection.Save(&acc)
+	if err.Error != nil {
 		return err.Error
 	}
 	return nil

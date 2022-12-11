@@ -9,7 +9,7 @@ type NewClassService interface {
 	InsertNewClass(nc *entities.NewClassesReq) error
 	UpdateNewClass(nc *entities.NewClassesReq) error
 	DeleteNewClass(nc *entities.NewclassesDetail) error
-	FindAllNewClass() []entities.NewclassesDetail
+	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 }
 type newClassService struct {
@@ -22,7 +22,7 @@ func (*newClassService) DeleteNewClass(nc *entities.NewclassesDetail) error {
 }
 
 // FindAllNewClass implements NewClassService
-func (svc *newClassService) FindAllNewClass() []entities.NewclassesDetail {
+func (svc *newClassService) FindAllNewClass() []entities.NewclasssesSet {
 	return svc.NewClassRepository.FindAllNewClass()
 }
 

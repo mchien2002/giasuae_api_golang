@@ -30,7 +30,7 @@ func (*newClassController) DeleteNewClass(context *gin.Context) {
 
 // FindAllNewClass implements NewClassController
 func (ctrl *newClassController) FindAllNewClass(context *gin.Context) {
-	var newclasses []entities.NewclassesDetail = ctrl.NewClassService.FindAllNewClass()
+	var newclasses []entities.NewclasssesSet = ctrl.NewClassService.FindAllNewClass()
 	res := helper.BuildResponse(true, "OK", newclasses)
 	context.JSON(http.StatusOK, res)
 }

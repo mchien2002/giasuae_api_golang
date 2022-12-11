@@ -11,7 +11,7 @@ type NewClassRepository interface {
 	InsertNewClass(nc *entities.NewClassesReq) error
 	UpdateNewClass(nc *entities.NewClassesReq) error
 	DeleteNewClass(nc *entities.NewclassesDetail) error
-	FindAllNewClass() []entities.NewclassesDetail
+	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 }
 
@@ -25,9 +25,51 @@ func (db *newClassConnection) DeleteNewClass(nc *entities.NewclassesDetail) erro
 }
 
 // FindAllNewClass implements NewClassRepository
-func (db *newClassConnection) FindAllNewClass() []entities.NewclassesDetail {
-	var newclasses []entities.NewclassesDetail
-	db.connection.Table("newclasses").Scan(&newclasses)
+func (db *newClassConnection) FindAllNewClass() []entities.NewclasssesSet {
+	var newclasses []entities.NewclasssesSet
+	db.connection.Table("newclasses").Select(`newclasses.id,
+	newclasses.address,
+	newclasses.district,
+	newclasses.sobuoi,
+	newclasses.time,
+	newclasses.salary,
+	newclasses.require,
+	newclasses.status,
+	newclasses.contact,
+	newclasses.created_at,
+	(SELECT 
+		GROUP_CONCAT((SELECT c.name
+			FROM
+				classes c
+			WHERE
+				(c.id = ncc.id_class))
+			SEPARATOR ', ')
+		FROM
+			classes_of_newclasses ncc
+		WHERE
+			(ncc.id_newclass = newclasses.id)) AS classes,
+	(SELECT 
+		GROUP_CONCAT((SELECT s.name
+			FROM
+				subjects s
+			WHERE
+				(s.id = ncs.id_subject))
+			SEPARATOR ', ')
+		FROM
+			subjects_of_newclasses ncs
+		WHERE
+			(ncs.id_newclass = newclasses.id)) AS subjects,
+	(SELECT 
+		GROUP_CONCAT((SELECT ctg.name
+			FROM
+				categories ctg
+			WHERE
+				(ctg.id = ncctg.id_category))
+			SEPARATOR ', ')
+		FROM
+			categories_of_newclasses ncctg
+		WHERE
+			(ncctg.id_newclass = newclasses.id)) AS categories`).Group("newclasses.id").Find(&newclasses)
 	return newclasses
 }
 

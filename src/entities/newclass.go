@@ -41,6 +41,9 @@ type NewclasssesSet struct {
 	Require    string `json:"require"`
 	Status     int    `json:"status"`
 	Contact    string `json:"contact"`
+	Subjects   string `json:"subjects"`
+	Classes    string `json:"classes"`
+	Categories string `json:"categories"`
 	Created_at string `json:"createdAt"`
 }
 

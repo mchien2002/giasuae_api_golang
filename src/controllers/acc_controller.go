@@ -52,7 +52,7 @@ func (ctrl *accountController) FindByID(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
-	var acc entities.Account = ctrl.AccountService.FindByID(id)
+	var acc entities.Account = ctrl.AccountService.FindByID(int(id))
 	res := helper.BuildResponse(true, "OK", acc)
 	context.JSON(http.StatusOK, res)
 }

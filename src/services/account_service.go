@@ -10,7 +10,7 @@ type AccountService interface {
 	UpdateAccount(acc *entities.Account)
 	DeleteAccount(acc *entities.Account)
 	FindAllAccount() []entities.Account
-	FindByID(id uint64) entities.Account
+	FindByID(id int) entities.Account
 }
 type accountService struct {
 	AccountReponsitory repositories.AccountReponsitory
@@ -27,7 +27,7 @@ func (accsv*accountService) FindAllAccount() []entities.Account {
 }
 
 // FindByID implements AccountService
-func (accsv*accountService) FindByID(id uint64) entities.Account {
+func (accsv*accountService) FindByID(id int) entities.Account {
 	return accsv.AccountReponsitory.FindByID(id)
 }
 

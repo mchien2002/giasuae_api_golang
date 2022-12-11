@@ -87,7 +87,7 @@ func main() {
 	accountRoutes := r.Group("v1/account")
 	{
 		accountRoutes.GET("/index", accountController.FindAllAccount)
-		accountRoutes.GET("/filter", accountController.FindByID)
+		accountRoutes.GET("/id", accountController.FindByID)
 		accountRoutes.POST("/index", accountController.InsertAccount)
 		accountRoutes.POST("/remove", accountController.DeleteAccount)
 		accountRoutes.POST("/edit", accountController.UpdateAccount)

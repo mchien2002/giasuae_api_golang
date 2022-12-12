@@ -118,12 +118,12 @@ func (db *newClassConnection) UpdateNewClass(nc *entities.NewClassesReq) error {
 	delListSubjectOfNC(db, nc.ID)
 	delListClassOfNC(db, nc.ID)
 	delListCategoryOfNC(db, nc.ID)
-	var newClassSet entities.NewclasssesSet
+	var newClass entities.NewClassesDefault
 	var subOfNC []entities.SubjectsOfNewclasses
 	var clasOfNC []entities.ClassesOfNewclasses
 	var ctgOfNC []entities.CategoriesOfNewclasses
-	smapping.FillStruct(&newClassSet, smapping.MapFields(&nc))
-	err := db.connection.Table("newclasses").Save(&newClassSet)
+	smapping.FillStruct(&newClass, smapping.MapFields(&nc))
+	err := db.connection.Table("newclasses").Save(&newClass)
 	if err.Error != nil {
 		return err.Error
 	}
@@ -147,8 +147,8 @@ func (db *newClassConnection) UpdateNewClass(nc *entities.NewClassesReq) error {
 	}
 
 	err1 := db.connection.Table("subjects_of_newclasses").Save(&subOfNC)
-	err2 := db.connection.Table("subjects_of_newclasses").Save(&clasOfNC)
-	err3 := db.connection.Table("subjects_of_newclasses").Save(&ctgOfNC)
+	err2 := db.connection.Table("classes_of_newclasses").Save(&clasOfNC)
+	err3 := db.connection.Table("categories_of_newclasses").Save(&ctgOfNC)
 	if err1.Error != nil {
 		return err1.Error
 	}

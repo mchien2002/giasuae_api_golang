@@ -11,9 +11,15 @@ type PostService interface {
 	DeletePost(id int) error
 	FindAllPost() []entities.Post
 	FindByID(id int) entities.Post
+	FilterPost(value ...interface{}) []entities.Post
 }
 type postService struct {
 	PostRepository repositories.PostRepository
+}
+
+// FilterPost implements PostService
+func (svc *postService) FilterPost(value ...interface{}) []entities.Post {
+	return svc.PostRepository.FilterPost(value[0])
 }
 
 // DeletePost implements PostService

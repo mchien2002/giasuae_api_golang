@@ -12,10 +12,18 @@ type PostRepository interface {
 	DeletePost(id int) error
 	FindAllPost() []entities.Post
 	FindByID(id int) entities.Post
+	FilterPost(value ...interface{}) []entities.Post
 }
 
 type postConnection struct {
 	connection *gorm.DB
+}
+
+// FilterPost implements PostRepository
+func (db *postConnection) FilterPost(value ...interface{}) []entities.Post {
+	var posts []entities.Post
+	db.connection.Where("type = ?", value[0]).Find(&posts)
+	return posts
 }
 
 // DeletePost implements PostRepository

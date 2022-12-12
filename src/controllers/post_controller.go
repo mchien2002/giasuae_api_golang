@@ -17,10 +17,24 @@ type PostController interface {
 	DeletePost(context *gin.Context)
 	FindAllPost(context *gin.Context)
 	FindByID(context *gin.Context)
+	FilterPost(context *gin.Context)
 }
 
 type postController struct {
 	PostService services.PostService
+}
+
+// FilterPost implements PostController
+func (ctrl *postController) FilterPost(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Query("type"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không tìm thấy id", err.Error(), helper.EmptyObjec{})
+		context.JSON(http.StatusBadRequest, res)
+		return
+	}
+	var posts []entities.Post = ctrl.PostService.FilterPost(int(id))
+	res := helper.BuildResponse(true, "OK", posts)
+	context.JSON(http.StatusOK, res)
 }
 
 // DeletePost implements PostController

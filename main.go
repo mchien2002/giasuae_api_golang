@@ -109,6 +109,7 @@ func main() {
 		postRoutes.POST("/edit", postController.UpdatePost)
 		postRoutes.POST("/remove", postController.DeletePost)
 		postRoutes.GET("/id", postController.FindByID)
+		postRoutes.GET("/filter", postController.FilterPost)
 	}
 	transRoutes := r.Group("v1/trans")
 	{

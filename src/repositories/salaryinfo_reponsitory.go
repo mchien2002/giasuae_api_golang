@@ -20,8 +20,10 @@ type salaryinfoConnection struct {
 }
 
 // FindByType implements SalaryinfoRepository
-func (*salaryinfoConnection) FindByType(type_teacher int) []entities.SalaryinfoView {
-	panic("unimplemented")
+func (db *salaryinfoConnection) FindByType(type_teacher int) []entities.SalaryinfoView {
+	var sal []entities.SalaryinfoView
+	db.connection.Table("salaryinfos").Where("type_teacher = ?", type_teacher).Scan(&sal)
+	return sal
 }
 
 // DeleteSalaryinfo implements SalaryinfoRepository

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"giasuaeapi/src/date_picker"
 	"giasuaeapi/src/entities"
 	"giasuaeapi/src/helper"
@@ -44,7 +45,7 @@ func (ctrl *salaryinfoController) DeleteSalaryinfo(context *gin.Context) {
 
 // FindAllSalaryinfo implements SalaryinfoController
 func (ctrl *salaryinfoController) FindAllSalaryinfo(context *gin.Context) {
-	var sals []entities.Salaryinfo = ctrl.SalaryinfoService.FindAllSalaryinfo()
+	var sals []entities.SalaryinfoView = ctrl.SalaryinfoService.FindAllSalaryinfo()
 	res := helper.BuildResponse(true, "OK", sals)
 	context.JSON(http.StatusOK, res)
 }
@@ -57,7 +58,7 @@ func (ctrl *salaryinfoController) FindByID(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
-	var sal entities.Salaryinfo = ctrl.SalaryinfoService.FindByID(int(id))
+	var sal entities.SalaryinfoView = ctrl.SalaryinfoService.FindByID(int(id))
 	res := helper.BuildResponse(true, "OK", sal)
 	context.JSON(http.StatusOK, res)
 }
@@ -70,7 +71,7 @@ func (ctrl *salaryinfoController) FindByType(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
-	var sal []entities.Salaryinfo = ctrl.SalaryinfoService.FindByType(int(id))
+	var sal []entities.SalaryinfoView = ctrl.SalaryinfoService.FindByType(int(id))
 	res := helper.BuildResponse(true, "OK", sal)
 	context.JSON(http.StatusOK, res)
 }
@@ -82,6 +83,7 @@ func (ctrl *salaryinfoController) InsertSalaryinfo(context *gin.Context) {
 	}
 
 	err := context.BindJSON(&sal)
+	fmt.Println(sal)
 	if err != nil {
 		res := helper.BuildResponseError("Sai cú pháp", err.Error(), helper.EmptyObjec{})
 		context.JSON(http.StatusBadRequest, res)

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"giasuaeapi/src/entities"
 
 	"gorm.io/gorm"
@@ -96,7 +97,10 @@ func (db *tutorConnection) InsertTutor(tutor *entities.TutorReq) error {
 	var subOfTT []entities.SubjectsOfTutor
 	var classOfTT []entities.ClassesOfTutor
 	var ctgOfTT []entities.CategoriesOfTutor
-	db.connection.Table("tutors").Create(&tutor)
+	err := db.connection.Table("tutors").Create(&tutor)
+	if err.Error != nil {
+		return fmt.Errorf("Tài khoản này đã đăng ký gia sư")
+	}
 	for _, value := range tutor.Subjects {
 		subOfTT = append(subOfTT, entities.SubjectsOfTutor{
 			ID_tutor:   tutor.ID,
@@ -144,13 +148,3 @@ func getListCategoryOfTutor(db *tutorConnection, id int) []entities.Category {
 	db.connection.Table("categories").Joins("inner join categories_of_tutors on id_tutor = ?", id).Where("id = id_category").Scan(&categories)
 	return categories
 }
-
-// func delListSubjectOfNC(db *TutorConnection, ncId int) {
-// 	db.connection.Table("subjects_of_Tutores").Where("id_Tutor = ?", ncId).Delete(&entities.SubjectsOfTutores{})
-// }
-// func delListClassOfNC(db *TutorConnection, ncId int) {
-// 	db.connection.Table("classes_of_Tutores").Where("id_Tutor = ?", ncId).Delete(&entities.ClassesOfTutores{})
-// }
-// func delListCategoryOfNC(db *TutorConnection, ncId int) {
-// 	db.connection.Table("categories_of_Tutores").Where("id_Tutor = ?", ncId).Delete(&entities.CategoriesOfTutores{})
-// }

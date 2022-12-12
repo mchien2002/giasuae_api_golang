@@ -83,6 +83,7 @@ func main() {
 		categoryRoutes.POST("/index", categoryController.InsertCategory)
 		categoryRoutes.POST("/edit", categoryController.UpdateCategory)
 		categoryRoutes.POST("/remove", categoryController.DeleteCategory)
+		categoryRoutes.GET("/filter", categoryController.FilterCategorry)
 	}
 	accountRoutes := r.Group("v1/account")
 	{

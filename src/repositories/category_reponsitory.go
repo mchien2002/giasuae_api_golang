@@ -12,7 +12,7 @@ type CategoryRepository interface {
 	DeleteCategory(ctg *entities.Category) error
 	FindAllCategory() []entities.Category
 	FindByID(id int) entities.Category
-	FilterCategory(value ...interface{}) entities.Category
+	FilterCategory(value ...interface{}) []entities.Category
 }
 
 type categoryConnection struct {
@@ -20,8 +20,10 @@ type categoryConnection struct {
 }
 
 // FilterCategory implements CategoryRepository
-func (*categoryConnection) FilterCategory(value ...interface{}) entities.Category {
-	panic("unimplemented")
+func (db *categoryConnection) FilterCategory(value ...interface{}) []entities.Category {
+	var ctgs []entities.Category
+	db.connection.Where("type = ?", value[0]).Find(&ctgs)
+	return ctgs
 }
 
 // DeleteCategory implements CategoryRepository

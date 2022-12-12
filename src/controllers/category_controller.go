@@ -17,10 +17,24 @@ type CategoryController interface {
 	DeleteCategory(context *gin.Context)
 	FindAllCategory(context *gin.Context)
 	FindByID(context *gin.Context)
+	FilterCategorry(context *gin.Context)
 }
 
 type categoryController struct {
 	CategoryService services.CategoryService
+}
+
+// FilterCategorry implements CategoryController
+func (ctrl *categoryController) FilterCategorry(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Query("type"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không tìm thấy id", err.Error(), helper.EmptyObjec{})
+		context.JSON(http.StatusBadRequest, res)
+		return
+	}
+	var category []entities.Category = ctrl.CategoryService.FilterCategory(int(id))
+	res := helper.BuildResponse(true, "OK", category)
+	context.JSON(http.StatusOK, res)
 }
 
 // DeleteCategory implements CategoryController

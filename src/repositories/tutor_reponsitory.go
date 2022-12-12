@@ -38,7 +38,6 @@ func (db *tutorConnection) FindAllTutor() []entities.TutorSet {
 	tutors.phone,
 	tutors.school,
 	tutors.department,
-	tutors.teach_areas,
 	tutors.gender,
 	tutors.graduate_year,
 	tutors.isnow,
@@ -67,7 +66,18 @@ func (db *tutorConnection) FindAllTutor() []entities.TutorSet {
 		FROM
 			subjects_of_tutors ncs
 		WHERE
-			(ncs.id_tutor = tutors.id)) AS subjects`).Group("tutors.id").Find(&tutors)
+			(ncs.id_tutor = tutors.id)) AS subjects,
+	(SELECT 
+		GROUP_CONCAT((SELECT ctg.name
+			FROM
+				categories ctg
+			WHERE
+				(ctg.id = cot.id_category))
+			SEPARATOR ', ')
+		FROM
+			categories_of_tutors cot
+		WHERE
+			(cot.id_tutor = tutors.id)) AS categories`).Group("tutors.id").Find(&tutors)
 	return tutors
 }
 
@@ -77,6 +87,7 @@ func (db *tutorConnection) FindByID(id int) entities.TutorDetail {
 	db.connection.Limit(1).Table("tutors").Where("id = ?", id).Scan(&tutors)
 	tutors.Subjects = getListSubjectOfTutor(db, id)
 	tutors.Classes = getListClassOfTutor(db, id)
+	tutors.Categories = getListCategoryOfTutor(db, id)
 	return tutors
 }
 
@@ -84,6 +95,7 @@ func (db *tutorConnection) FindByID(id int) entities.TutorDetail {
 func (db *tutorConnection) InsertTutor(tutor *entities.TutorReq) error {
 	var subOfTT []entities.SubjectsOfTutor
 	var classOfTT []entities.ClassesOfTutor
+	var ctgOfTT []entities.CategoriesOfTutor
 	db.connection.Table("tutors").Create(&tutor)
 	for _, value := range tutor.Subjects {
 		subOfTT = append(subOfTT, entities.SubjectsOfTutor{
@@ -97,9 +109,16 @@ func (db *tutorConnection) InsertTutor(tutor *entities.TutorReq) error {
 			ID_class: value,
 		})
 	}
+	for _, value := range tutor.Categories {
+		ctgOfTT = append(ctgOfTT, entities.CategoriesOfTutor{
+			ID_tutor:    tutor.ID,
+			ID_category: value,
+		})
+	}
 
 	db.connection.Create(&subOfTT)
 	db.connection.Create(&classOfTT)
+	db.connection.Create(&ctgOfTT)
 	return nil
 }
 
@@ -120,11 +139,11 @@ func getListClassOfTutor(db *tutorConnection, id int) []entities.Class {
 	return classes
 }
 
-// func getListCategoryOfNC(db *TutorConnection, ncId int) []entities.Category {
-// 	var categories []entities.Category
-// 	db.connection.Table("categories").Joins("inner join categories_of_Tutores on id_Tutor = ?", ncId).Where("id = id_category").Scan(&categories)
-// 	return categories
-// }
+func getListCategoryOfTutor(db *tutorConnection, id int) []entities.Category {
+	var categories []entities.Category
+	db.connection.Table("categories").Joins("inner join categories_of_tutors on id_tutor = ?", id).Where("id = id_category").Scan(&categories)
+	return categories
+}
 
 // func delListSubjectOfNC(db *TutorConnection, ncId int) {
 // 	db.connection.Table("subjects_of_Tutores").Where("id_Tutor = ?", ncId).Delete(&entities.SubjectsOfTutores{})

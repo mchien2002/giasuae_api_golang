@@ -23,6 +23,7 @@ var (
 	postRepository       repositories.PostRepository       = repositories.NewPostRepository(db)
 	transRepository      repositories.TransRepository      = repositories.NewTransRepository(db)
 	salaryinfoRepository repositories.SalaryinfoRepository = repositories.NewSalaryinfoRepository(db)
+	tutorRepository      repositories.TutorRepository      = repositories.NewTutorRepository(db)
 
 	jwtService        services.JWTService        = services.NewJWTService()
 	accountService    services.AccountService    = services.NewAccountService(accountReponsitory)
@@ -34,6 +35,7 @@ var (
 	postService       services.PostService       = services.NewPostService(postRepository)
 	transService      services.TransService      = services.NewTransService(transRepository)
 	salaryinfoService services.SalaryinfoService = services.NewSalaryinfoService(salaryinfoRepository)
+	tutorService      services.TutorService      = services.NewTutorService(tutorRepository)
 
 	accountController    controllers.AccountController    = controllers.NewAccountController(accountService)
 	authCtrl             controllers.AuthController       = controllers.NewAuthController(authService, jwtService)
@@ -44,6 +46,7 @@ var (
 	postController       controllers.PostController       = controllers.NewPostController(postService)
 	transController      controllers.TransController      = controllers.NewTransController(transService)
 	salaryinfoController controllers.SalaryinfoController = controllers.NewSalaryinfoController(salaryinfoService)
+	tutorController      controllers.TutorController      = controllers.NewTutorController(tutorService)
 )
 
 func main() {
@@ -128,6 +131,12 @@ func main() {
 		salRoutes.GET("/filter", salaryinfoController.FindByType)
 	}
 
-	
+	tutorRoutes := r.Group("v1/tutor")
+	{
+		tutorRoutes.GET("/index", tutorController.FindAllTutor)
+		tutorRoutes.POST("/index", tutorController.InsertTutor)
+		tutorRoutes.GET("/id", tutorController.FindByID)
+	}
+
 	r.Run()
 }

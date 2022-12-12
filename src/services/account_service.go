@@ -11,33 +11,39 @@ type AccountService interface {
 	DeleteAccount(acc *entities.Account)
 	FindAllAccount() []entities.Account
 	FindByID(id int) entities.Account
+	FilterAccount(value ...interface{}) []entities.Account
 }
 type accountService struct {
 	AccountReponsitory repositories.AccountReponsitory
 }
 
+// FilterAccount implements AccountService
+func (svc *accountService) FilterAccount(value ...interface{}) []entities.Account {
+	return svc.AccountReponsitory.FilterAccount(value)
+}
+
 // DeleteAccount implements AccountService
-func (accsv*accountService) DeleteAccount(acc *entities.Account) {
+func (accsv *accountService) DeleteAccount(acc *entities.Account) {
 	accsv.AccountReponsitory.DeleteAccount(acc)
 }
 
 // FindAllAccount implements AccountService
-func (accsv*accountService) FindAllAccount() []entities.Account {
+func (accsv *accountService) FindAllAccount() []entities.Account {
 	return accsv.AccountReponsitory.FindAllAccount()
 }
 
 // FindByID implements AccountService
-func (accsv*accountService) FindByID(id int) entities.Account {
+func (accsv *accountService) FindByID(id int) entities.Account {
 	return accsv.AccountReponsitory.FindByID(id)
 }
 
 // InsertAccount implements AccountService
-func (accsv*accountService) InsertAccount(acc *entities.Account) {
+func (accsv *accountService) InsertAccount(acc *entities.Account) {
 	accsv.AccountReponsitory.InsertAccount(acc)
 }
 
 // UpdateAccount implements AccountService
-func (accsv*accountService) UpdateAccount(acc *entities.Account) {
+func (accsv *accountService) UpdateAccount(acc *entities.Account) {
 	accsv.AccountReponsitory.UpdateAccount(acc)
 }
 

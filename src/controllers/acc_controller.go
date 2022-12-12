@@ -17,10 +17,19 @@ type AccountController interface {
 	DeleteAccount(context *gin.Context)
 	FindAllAccount(context *gin.Context)
 	FindByID(context *gin.Context)
+	FilterAccount(context *gin.Context)
 }
 
 type accountController struct {
 	AccountService services.AccountService
+}
+
+// FilterAccount implements AccountController
+func (ctrl *accountController) FilterAccount(context *gin.Context) {
+	role, _ := strconv.ParseUint(context.Query("role"), 0, 0)
+	var acc []entities.Account = ctrl.AccountService.FilterAccount(int(role))
+	res := helper.BuildResponse(true, "OK", acc)
+	context.JSON(http.StatusOK, res)
 }
 
 // DeleteAccount implements AccountController

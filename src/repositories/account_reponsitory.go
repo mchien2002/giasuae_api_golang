@@ -18,10 +18,18 @@ type AccountReponsitory interface {
 	FindAllAccount() []entities.Account
 	VerifyCredential(username string) interface{}
 	FindByID(id int) entities.Account
+	FilterAccount(value ...interface{}) []entities.Account
 }
 
 type accountReponsitory struct {
 	connection *gorm.DB
+}
+
+// FilterAccount implements AccountReponsitory
+func (db *accountReponsitory) FilterAccount(value ...interface{}) []entities.Account {
+	var account []entities.Account
+	db.connection.Table("accounts").Where("role = ?", value[0]).Scan(&account)
+	return account
 }
 
 // VerifyCredential implements AccountReponsitory

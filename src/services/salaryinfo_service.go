@@ -10,7 +10,7 @@ type SalaryinfoService interface {
 	UpdateSalaryinfo(sal *entities.Salaryinfo) error
 	DeleteSalaryinfo(id int) error
 	FindAllSalaryinfo() []entities.SalaryinfoView
-	FindByID(id int) entities.SalaryinfoView
+	FindByID(id int) entities.SalaryinfoDetail
 	FindByType(type_teacher int) []entities.SalaryinfoView
 }
 type salaryinfoService struct {
@@ -28,7 +28,7 @@ func (svc *salaryinfoService) FindAllSalaryinfo() []entities.SalaryinfoView {
 }
 
 // FindByID implements SalaryinfoService
-func (svc *salaryinfoService) FindByID(id int) entities.SalaryinfoView {
+func (svc *salaryinfoService) FindByID(id int) entities.SalaryinfoDetail {
 	return svc.SalaryinfoRepository.FindByID(id)
 }
 

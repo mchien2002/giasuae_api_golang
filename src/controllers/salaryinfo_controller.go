@@ -58,7 +58,7 @@ func (ctrl *salaryinfoController) FindByID(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
-	var sal entities.SalaryinfoView = ctrl.SalaryinfoService.FindByID(int(id))
+	var sal entities.SalaryinfoDetail = ctrl.SalaryinfoService.FindByID(int(id))
 	res := helper.BuildResponse(true, "OK", sal)
 	context.JSON(http.StatusOK, res)
 }

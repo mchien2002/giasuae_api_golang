@@ -127,5 +127,7 @@ func main() {
 		salRoutes.GET("/id", salaryinfoController.FindByID)
 		salRoutes.GET("/filter", salaryinfoController.FindByType)
 	}
+
+	
 	r.Run()
 }

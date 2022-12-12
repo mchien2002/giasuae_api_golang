@@ -43,7 +43,7 @@ func (ctrl *transController) FindByIDAcc(context *gin.Context) {
 
 // InsertTrans implements TransController
 func (ctrl *transController) InsertTrans(context *gin.Context) {
-	var trans entities.Transactionhistories = entities.Transactionhistories{
+	var trans entities.TransactionhistoriesReq = entities.TransactionhistoriesReq{
 		Created_at: date_picker.FormatDataNow(),
 	}
 	err := context.BindJSON(&trans)
@@ -54,7 +54,7 @@ func (ctrl *transController) InsertTrans(context *gin.Context) {
 	}
 	errTrans := ctrl.TransService.InsertTrans(&trans)
 	if errTrans != nil {
-		res := helper.BuildResponseError("Môn học đã tồn tại", errTrans.Error(), helper.EmptyObjec{})
+		res := helper.BuildResponseError("Thêm lịch giao dịch thất bại", errTrans.Error(), helper.EmptyObjec{})
 		context.JSON(http.StatusBadRequest, res)
 		return
 	}

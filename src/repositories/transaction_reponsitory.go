@@ -7,7 +7,7 @@ import (
 )
 
 type TransRepository interface {
-	InsertTrans(trans *entities.Transactionhistories) error
+	InsertTrans(trans *entities.TransactionhistoriesReq) error
 	FindAllTrans() []entities.Transactionhistories
 	FindByIDAcc(id int) entities.Transactionhistories
 }
@@ -31,7 +31,7 @@ func (db *transConnection) FindByIDAcc(id int) entities.Transactionhistories {
 }
 
 // InsertTrans implements TransRepository
-func (db *transConnection) InsertTrans(trans *entities.Transactionhistories) error {
+func (db *transConnection) InsertTrans(trans *entities.TransactionhistoriesReq) error {
 	err := db.connection.Save(&trans)
 	if err.Error != nil {
 		return err.Error

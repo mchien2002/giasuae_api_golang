@@ -6,7 +6,7 @@ import (
 )
 
 type TransService interface {
-	InsertTrans(trans *entities.Transactionhistories) error
+	InsertTrans(trans *entities.TransactionhistoriesReq) error
 	FindAllTrans() []entities.Transactionhistories
 	FindByIDAcc(id int) entities.Transactionhistories
 }
@@ -25,7 +25,7 @@ func (svc *transService) FindByIDAcc(id int) entities.Transactionhistories {
 }
 
 // InsertTrans implements TransService
-func (svc *transService) InsertTrans(trans *entities.Transactionhistories) error {
+func (svc *transService) InsertTrans(trans *entities.TransactionhistoriesReq) error {
 	return svc.TransRepository.InsertTrans(trans)
 }
 

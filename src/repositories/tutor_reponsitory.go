@@ -30,7 +30,7 @@ func (db *tutorConnection) FilterTutor(subID int, classID int, cateID int, gende
 		Joins("INNER JOIN categories_of_tutors ON tutors.id IN (SELECT id_tutor FROM categories_of_tutors WHERE categories_of_tutors.id_category = ?) OR ? = 0 ", cateID, cateID).
 		// Joins("INNER JOIN tutors ON tutorS.gender LIKE ?", gender).
 		Select(queyGetAllTutor()).
-		Where("tutors.gender = ? OR tutors.isnow = ?", gender, isnow).
+		Where("(tutors.gender = ? OR ? = '') AND (tutors.isnow = ? OR ? = '')", gender, gender, isnow, isnow).
 		Group("tutors.id").
 		Find(&tutors)
 	return tutors

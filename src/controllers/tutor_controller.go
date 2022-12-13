@@ -17,10 +17,26 @@ type TutorController interface {
 	DeleteTutor(context *gin.Context)
 	FindAllTutor(context *gin.Context)
 	FindByID(context *gin.Context)
+	FilterTutor(context *gin.Context)
 }
 
 type tutorController struct {
 	TutorService services.TutorService
+}
+
+// FilterTutor implements TutorController
+func (ctrl *tutorController) FilterTutor(context *gin.Context) {
+	var tutors []entities.TutorSet
+	subID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
+	classID, _ := strconv.ParseInt(context.Query("classID"), 0, 0)
+	cateID, _ := strconv.ParseInt(context.Query("cateID"), 0, 0)
+	gender := context.Query("gender")
+	isnow := context.Query("isnow")
+	// gender = "%" + gender + "%"
+	// isnow = "%" + isnow + "%"
+	tutors = ctrl.TutorService.FilterTutor(int(subID), int(classID), int(cateID), gender, isnow)
+	res := helper.BuildResponse(true, "OK", tutors)
+	context.JSON(http.StatusOK, res)
 }
 
 // DeleteTutor implements TutorController

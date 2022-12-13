@@ -14,10 +14,26 @@ type TutorRepository interface {
 	DeleteTutor(id int) error
 	FindAllTutor() []entities.TutorSet
 	FindByID(id int) entities.TutorDetail
+	FilterTutor(subID int, classID int, cateID int, gender string, isnow string) []entities.TutorSet
 }
 
 type tutorConnection struct {
 	connection *gorm.DB
+}
+
+// FilterTutor implements TutorRepository
+func (db *tutorConnection) FilterTutor(subID int, classID int, cateID int, gender string, isnow string) []entities.TutorSet {
+	var tutors []entities.TutorSet
+	db.connection.Table("tutors").
+		Joins("INNER JOIN subjects_of_tutors ON tutors.id IN (SELECT id_tutor FROM subjects_of_tutors WHERE subjects_of_tutors.id_subject = ?) OR ? = 0 ", subID, subID).
+		Joins("INNER JOIN classes_of_tutors ON tutors.id IN (SELECT id_tutor FROM classes_of_tutors WHERE classes_of_tutors.id_class = ?) OR ? = 0 ", classID, classID).
+		Joins("INNER JOIN categories_of_tutors ON tutors.id IN (SELECT id_tutor FROM categories_of_tutors WHERE categories_of_tutors.id_category = ?) OR ? = 0 ", cateID, cateID).
+		// Joins("INNER JOIN tutors ON tutorS.gender LIKE ?", gender).
+		Select(queyGetAllTutor()).
+		Where("tutors.gender = ? OR tutors.isnow = ?", gender, isnow).
+		Group("tutors.id").
+		Find(&tutors)
+	return tutors
 }
 
 // DeleteTutor implements TutorRepository
@@ -89,53 +105,7 @@ func (db *tutorConnection) UpdateTutor(tutor *entities.TutorReq) error {
 // FindAllTutor implements TutorRepository
 func (db *tutorConnection) FindAllTutor() []entities.TutorSet {
 	var tutors []entities.TutorSet
-	db.connection.Table("tutors").Select(`tutors.id,
-	tutors.name,
-	tutors.address,
-	tutors.email,
-	tutors.phone,
-	tutors.school,
-	tutors.department,
-	tutors.gender,
-	tutors.graduate_year,
-	tutors.isnow,
-	tutors.describe,
-	tutors.sobuoi,
-	tutors.birth_year,
-	tutors.created_at,
-	(SELECT 
-		GROUP_CONCAT((SELECT c.name
-			FROM
-				classes c
-			WHERE
-				(c.id = ncc.id_class))
-			SEPARATOR ', ')
-		FROM
-			classes_of_tutors ncc
-		WHERE
-			(ncc.id_tutor = tutors.id)) AS classes,
-	(SELECT 
-		GROUP_CONCAT((SELECT s.name
-			FROM
-				subjects s
-			WHERE
-				(s.id = ncs.id_subject))
-			SEPARATOR ', ')
-		FROM
-			subjects_of_tutors ncs
-		WHERE
-			(ncs.id_tutor = tutors.id)) AS subjects,
-	(SELECT 
-		GROUP_CONCAT((SELECT ctg.name
-			FROM
-				categories ctg
-			WHERE
-				(ctg.id = cot.id_category))
-			SEPARATOR ', ')
-		FROM
-			categories_of_tutors cot
-		WHERE
-			(cot.id_tutor = tutors.id)) AS categories`).Group("tutors.id").Find(&tutors)
+	db.connection.Table("tutors").Select(queyGetAllTutor()).Group("tutors.id").Find(&tutors)
 	return tutors
 }
 
@@ -214,4 +184,54 @@ func delListClassOfTutor(db *tutorConnection, id int) {
 }
 func delListCategoryOfTutor(db *tutorConnection, id int) {
 	db.connection.Table("categories_of_tutors").Where("id_tutor = ?", id).Delete(&entities.CategoriesOfTutor{})
+}
+
+func queyGetAllTutor() string {
+	return `tutors.id,
+	tutors.name,
+	tutors.address,
+	tutors.email,
+	tutors.phone,
+	tutors.school,
+	tutors.department,
+	tutors.gender,
+	tutors.graduate_year,
+	tutors.isnow,
+	tutors.describe,
+	tutors.sobuoi,
+	tutors.birth_year,
+	tutors.created_at,
+	(SELECT 
+		GROUP_CONCAT((SELECT c.name
+			FROM
+				classes c
+			WHERE
+				(c.id = ncc.id_class))
+			SEPARATOR ', ')
+		FROM
+			classes_of_tutors ncc
+		WHERE
+			(ncc.id_tutor = tutors.id)) AS classes,
+	(SELECT 
+		GROUP_CONCAT((SELECT s.name
+			FROM
+				subjects s
+			WHERE
+				(s.id = ncs.id_subject))
+			SEPARATOR ', ')
+		FROM
+			subjects_of_tutors ncs
+		WHERE
+			(ncs.id_tutor = tutors.id)) AS subjects,
+	(SELECT 
+		GROUP_CONCAT((SELECT ctg.name
+			FROM
+				categories ctg
+			WHERE
+				(ctg.id = cot.id_category))
+			SEPARATOR ', ')
+		FROM
+			categories_of_tutors cot
+		WHERE
+			(cot.id_tutor = tutors.id)) AS categories`
 }

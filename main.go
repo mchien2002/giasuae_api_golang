@@ -142,6 +142,7 @@ func main() {
 		tutorRoutes.GET("/id", tutorController.FindByID)
 		tutorRoutes.POST("/remove", tutorController.DeleteTutor)
 		tutorRoutes.POST("/edit", tutorController.UpdateTutor)
+		tutorRoutes.GET("/filter", tutorController.FilterTutor)
 	}
 
 	r.Run()

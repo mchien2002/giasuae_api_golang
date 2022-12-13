@@ -11,9 +11,15 @@ type TutorService interface {
 	DeleteTutor(id int) error
 	FindAllTutor() []entities.TutorSet
 	FindByID(id int) entities.TutorDetail
+	FilterTutor(subID int, classID int, cateID int, gender string, isnow string) []entities.TutorSet
 }
 type tutorService struct {
 	TutorRepository repositories.TutorRepository
+}
+
+// FilterTutor implements TutorService
+func (svc *tutorService) FilterTutor(subID int, classID int, cateID int, gender string, isnow string) []entities.TutorSet {
+	return svc.TutorRepository.FilterTutor(subID, classID, cateID, gender, isnow)
 }
 
 // DeleteTutor implements TutorService

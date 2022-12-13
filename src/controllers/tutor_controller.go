@@ -24,13 +24,38 @@ type tutorController struct {
 }
 
 // DeleteTutor implements TutorController
-func (*tutorController) DeleteTutor(context *gin.Context) {
-	panic("unimplemented")
+func (ctrl *tutorController) DeleteTutor(context *gin.Context) {
+	id, err := strconv.ParseUint(context.Query("id"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không có gia sư được tìm thấy", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	err2 := ctrl.TutorService.DeleteTutor(int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Xóa gia sư thất bại", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // UpdateTutor implements TutorController
-func (*tutorController) UpdateTutor(context *gin.Context) {
-	panic("unimplemented")
+func (ctrl *tutorController) UpdateTutor(context *gin.Context) {
+	var tutor entities.TutorReq
+	if err := context.ShouldBind(&tutor); err != nil {
+		res := helper.BuildResponseError("Sai cú pháp", err.Error(), helper.EmptyObjec{})
+		context.JSON(http.StatusBadRequest, res)
+		return
+	}
+	if err := ctrl.TutorService.UpdateTutor(&tutor); err != nil {
+		res := helper.BuildResponseError("Cập nhật thất bại", err.Error(), helper.EmptyObjec{})
+		context.JSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FindAllTutor implements TutorController

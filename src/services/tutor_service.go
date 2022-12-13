@@ -8,7 +8,7 @@ import (
 type TutorService interface {
 	InsertTutor(tutor *entities.TutorReq) error
 	UpdateTutor(tutor *entities.TutorReq) error
-	DeleteTutor(tutor *entities.TutorReq) error
+	DeleteTutor(id int) error
 	FindAllTutor() []entities.TutorSet
 	FindByID(id int) entities.TutorDetail
 }
@@ -17,13 +17,13 @@ type tutorService struct {
 }
 
 // DeleteTutor implements TutorService
-func (*tutorService) DeleteTutor(tutor *entities.TutorReq) error {
-	panic("unimplemented")
+func (svc *tutorService) DeleteTutor(id int) error {
+	return svc.TutorRepository.DeleteTutor(id)
 }
 
 // UpdateTutor implements TutorService
-func (*tutorService) UpdateTutor(tutor *entities.TutorReq) error {
-	panic("unimplemented")
+func (svc *tutorService) UpdateTutor(tutor *entities.TutorReq) error {
+	return svc.TutorRepository.UpdateTutor(tutor)
 }
 
 // FindAllTutor implements TutorService

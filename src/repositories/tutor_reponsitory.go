@@ -11,7 +11,7 @@ import (
 type TutorRepository interface {
 	InsertTutor(tutor *entities.TutorReq) error
 	UpdateTutor(tutor *entities.TutorReq) error
-	DeleteTutor(tutor *entities.TutorReq) error
+	DeleteTutor(id int) error
 	FindAllTutor() []entities.TutorSet
 	FindByID(id int) entities.TutorDetail
 }
@@ -21,14 +21,27 @@ type tutorConnection struct {
 }
 
 // DeleteTutor implements TutorRepository
-func (*tutorConnection) DeleteTutor(tutor *entities.TutorReq) error {
-	panic("unimplemented")
+func (db *tutorConnection) DeleteTutor(id int) error {
+	if err := db.connection.Table("classes_of_tutors").Where("id_tutor = ?", id).Delete(&entities.ClassesOfTutor{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("subjects_of_tutors").Where("id_tutor = ?", id).Delete(&entities.SubjectsOfTutor{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("categories_of_tutors").Where("id_tutor = ?", id).Delete(&entities.CategoriesOfTutor{}); err.Error != nil {
+		return err.Error
+	}
+
+	if err := db.connection.Table("tutors").Delete(&entities.TutorDefault{}, id); err.Error != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // UpdateTutor implements TutorRepository
 func (db *tutorConnection) UpdateTutor(tutor *entities.TutorReq) error {
-	delListCategoryOfTutor(db, tutor.ID)
-	delListCategoryOfTutor(db, tutor.ID)
+	delListClassOfTutor(db, tutor.ID)
+	delListSubjectOfTutor(db, tutor.ID)
 	delListCategoryOfTutor(db, tutor.ID)
 	var tutorDF entities.TutorDefault
 	var subOfTT []entities.SubjectsOfTutor

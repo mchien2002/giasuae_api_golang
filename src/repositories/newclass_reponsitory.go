@@ -13,7 +13,7 @@ type NewClassRepository interface {
 	DeleteNewClass(id int) error
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
-	FilterNewClass(value ...interface{}) []entities.NewclasssesSet
+	FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet
 }
 
 type newClassConnection struct {
@@ -21,9 +21,13 @@ type newClassConnection struct {
 }
 
 // FilterNewClass implements NewClassRepository
-func (db *newClassConnection) FilterNewClass(value ...interface{}) []entities.NewclasssesSet {
+func (db *newClassConnection) FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet {
 	var newclasses []entities.NewclasssesSet
-	db.connection.Table("newclasses").Joins("INNER JOIN subjects_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM subjects_of_newclasses WHERE subjects_of_newclasses.id_subject = ?) OR ? = 0 ", value[0], value[0]).Select(queyGetAllNewClass()).Joins("INNER JOIN classes_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM classes_of_newclasses WHERE classes_of_newclasses.id_class = ?) OR ? = 0 ", value[1], value[1]).Select(queyGetAllNewClass()).Joins("INNER JOIN categories_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM categories_of_newclasses WHERE categories_of_newclasses.id_category = ?) OR ? = 0 ", value[0], value[0]).Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
+	db.connection.Table("newclasses").
+	Joins("INNER JOIN subjects_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM subjects_of_newclasses WHERE subjects_of_newclasses.id_subject = ?) OR ? = 0 ", subID, subID).
+	Joins("INNER JOIN classes_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM classes_of_newclasses WHERE classes_of_newclasses.id_class = ?) OR ? = 0 ", classID, classID).
+	Joins("INNER JOIN categories_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM categories_of_newclasses WHERE categories_of_newclasses.id_category = ?) OR ? = 0 ", cateID, cateID).
+	Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
 	return newclasses
 }
 

@@ -28,10 +28,10 @@ type newClassController struct {
 func (ctrl *newClassController) FilterNewClass(context *gin.Context) {
 	var newclasses []entities.NewclasssesSet
 	subID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
-	classID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
-	cateID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
+	classID, _ := strconv.ParseInt(context.Query("classID"), 0, 0)
+	cateID, _ := strconv.ParseInt(context.Query("cateID"), 0, 0)
 
-	newclasses = ctrl.NewClassService.FilterNewClass(subID, classID, cateID)
+	newclasses = ctrl.NewClassService.FilterNewClass(int(subID), int(classID), int(cateID))
 	res := helper.BuildResponse(true, "OK", newclasses)
 	context.JSON(http.StatusOK, res)
 }

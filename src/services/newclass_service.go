@@ -11,15 +11,15 @@ type NewClassService interface {
 	DeleteNewClass(id int) error
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
-	FilterNewClass(value ...interface{}) []entities.NewclasssesSet
+	FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet
 }
 type newClassService struct {
 	NewClassRepository repositories.NewClassRepository
 }
 
 // FilterNewClass implements NewClassService
-func (svc *newClassService) FilterNewClass(value ...interface{}) []entities.NewclasssesSet {
-	return svc.NewClassRepository.FilterNewClass(value)
+func (svc *newClassService) FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet {
+	return svc.NewClassRepository.FilterNewClass(subID, classID, cateID)
 }
 
 // DeleteNewClass implements NewClassService

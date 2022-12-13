@@ -93,7 +93,6 @@ func main() {
 	{
 		accountRoutes.GET("/index", accountController.FindAllAccount)
 		accountRoutes.GET("/id", accountController.FindByID)
-		accountRoutes.POST("/index", accountController.InsertAccount)
 		accountRoutes.POST("/remove", accountController.DeleteAccount)
 		accountRoutes.POST("/edit", accountController.UpdateAccount)
 		accountRoutes.GET("/filter", accountController.FilterAccount)

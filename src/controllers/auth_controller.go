@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-sql-driver/mysql"
 )
 
 type AuthController interface {
@@ -52,9 +51,8 @@ func (ctrl *authController) Register(cx *gin.Context) {
 		return
 	}
 	errRg := ctrl.AuthService.CreateUser(&acc)
-	ercode := errRg.(*mysql.MySQLError)
-	if ercode.Number == 1062 {
-		res := helper.BuildResponseError("Email hoặc tên đăng nhập đã được sử dụng, vui lòng đăng ký một tài khoản khác", ercode.Message, helper.EmptyObjec{})
+	if errRg != nil {
+		res := helper.BuildResponseError("Email hoặc tên đăng nhập đã được sử dụng, vui lòng đăng ký một tài khoản khác", errRg.Error(), helper.EmptyObjec{})
 		cx.JSON(http.StatusBadRequest, res)
 		return
 	}

@@ -8,7 +8,7 @@ import (
 type CategoryService interface {
 	InsertCategory(ctg *entities.Category) error
 	UpdateCategory(ctg *entities.Category) error
-	DeleteCategory(ctg *entities.Category) error
+	DeleteCategory(id int) error
 	FindAllCategory() []entities.Category
 	FindByID(id int) entities.Category
 	FilterCategory(value ...interface{}) []entities.Category
@@ -18,8 +18,8 @@ type categoryService struct {
 }
 
 // DeleteCategory implements CategoryService
-func (svc *categoryService) DeleteCategory(ctg *entities.Category) error {
-	panic("unimplemented")
+func (svc *categoryService) DeleteCategory(id int) error {
+	return svc.CategoryRepository.DeleteCategory(id)
 }
 
 // FilterCategory implements CategoryService

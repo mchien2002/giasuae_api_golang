@@ -24,8 +24,21 @@ type newClassController struct {
 }
 
 // DeleteNewClass implements NewClassController
-func (*newClassController) DeleteNewClass(context *gin.Context) {
-	panic("unimplemented")
+func (ctrl *newClassController) DeleteNewClass(context *gin.Context) {
+	id, err := strconv.ParseUint(context.Query("id"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không có lớp mới được tìm thấy", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	err2 := ctrl.NewClassService.DeleteNewClass(int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Xóa lớp mới thất bại", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FindAllNewClass implements NewClassController

@@ -8,7 +8,7 @@ import (
 type NewClassService interface {
 	InsertNewClass(nc *entities.NewClassesReq) error
 	UpdateNewClass(nc *entities.NewClassesReq) error
-	DeleteNewClass(nc *entities.NewclassesDetail) error
+	DeleteNewClass(id int) error
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 }
@@ -17,8 +17,8 @@ type newClassService struct {
 }
 
 // DeleteNewClass implements NewClassService
-func (*newClassService) DeleteNewClass(nc *entities.NewclassesDetail) error {
-	panic("unimplemented")
+func (svc *newClassService) DeleteNewClass(id int) error {
+	return svc.NewClassRepository.DeleteNewClass(id)
 }
 
 // FindAllNewClass implements NewClassService

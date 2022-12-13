@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"giasuaeapi/src/entities"
 
+	"github.com/mashingan/smapping"
 	"gorm.io/gorm"
 )
 
@@ -25,8 +26,51 @@ func (*tutorConnection) DeleteTutor(tutor *entities.TutorReq) error {
 }
 
 // UpdateTutor implements TutorRepository
-func (*tutorConnection) UpdateTutor(tutor *entities.TutorReq) error {
-	panic("unimplemented")
+func (db *tutorConnection) UpdateTutor(tutor *entities.TutorReq) error {
+	delListCategoryOfTutor(db, tutor.ID)
+	delListCategoryOfTutor(db, tutor.ID)
+	delListCategoryOfTutor(db, tutor.ID)
+	var tutorDF entities.TutorDefault
+	var subOfTT []entities.SubjectsOfTutor
+	var clasOfTT []entities.ClassesOfTutor
+	var ctgOfTT []entities.CategoriesOfTutor
+	smapping.FillStruct(&tutorDF, smapping.MapFields(&tutor))
+	err := db.connection.Table("tutors").Save(&tutorDF)
+	if err.Error != nil {
+		return err.Error
+	}
+	for _, value := range tutor.Subjects {
+		subOfTT = append(subOfTT, entities.SubjectsOfTutor{
+			ID_tutor:   tutor.ID,
+			ID_subject: value,
+		})
+	}
+	for _, value := range tutor.Classes {
+		clasOfTT = append(clasOfTT, entities.ClassesOfTutor{
+			ID_tutor: tutor.ID,
+			ID_class: value,
+		})
+	}
+	for _, value := range tutor.Categories {
+		ctgOfTT = append(ctgOfTT, entities.CategoriesOfTutor{
+			ID_tutor:    tutor.ID,
+			ID_category: value,
+		})
+	}
+
+	err1 := db.connection.Table("subjects_of_tutors").Save(&subOfTT)
+	err2 := db.connection.Table("classes_of_tutors").Save(&clasOfTT)
+	err3 := db.connection.Table("categories_of_tutors").Save(&ctgOfTT)
+	if err1.Error != nil {
+		return err1.Error
+	}
+	if err2.Error != nil {
+		return err1.Error
+	}
+	if err3.Error != nil {
+		return err1.Error
+	}
+	return nil
 }
 
 // FindAllTutor implements TutorRepository
@@ -147,4 +191,14 @@ func getListCategoryOfTutor(db *tutorConnection, id int) []entities.Category {
 	var categories []entities.Category
 	db.connection.Table("categories").Joins("inner join categories_of_tutors on id_tutor = ?", id).Where("id = id_category").Scan(&categories)
 	return categories
+}
+
+func delListSubjectOfTutor(db *tutorConnection, id int) {
+	db.connection.Table("subjects_of_tutors").Where("id_tutor = ?", id).Delete(&entities.SubjectsOfTutor{})
+}
+func delListClassOfTutor(db *tutorConnection, id int) {
+	db.connection.Table("classes_of_tutors").Where("id_tutor = ?", id).Delete(&entities.ClassesOfTutor{})
+}
+func delListCategoryOfTutor(db *tutorConnection, id int) {
+	db.connection.Table("categories_of_tutors").Where("id_tutor = ?", id).Delete(&entities.CategoriesOfTutor{})
 }

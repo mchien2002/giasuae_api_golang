@@ -9,7 +9,7 @@ import (
 type CategoryRepository interface {
 	InsertCategory(ctg *entities.Category) error
 	UpdateCategory(ctg *entities.Category) error
-	DeleteCategory(ctg *entities.Category) error
+	DeleteCategory(id int) error
 	FindAllCategory() []entities.Category
 	FindByID(id int) entities.Category
 	FilterCategory(value ...interface{}) []entities.Category
@@ -27,8 +27,22 @@ func (db *categoryConnection) FilterCategory(value ...interface{}) []entities.Ca
 }
 
 // DeleteCategory implements CategoryRepository
-func (*categoryConnection) DeleteCategory(ctg *entities.Category) error {
-	panic("unimplemented")
+func (db *categoryConnection) DeleteCategory(id int) error {
+	if err := db.connection.Table("categories_of_newclasses").Where("id_category = ?", id).Delete(&entities.CategoriesOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+
+	if err := db.connection.Table("categories_of_tutors").Where("id_category = ?", id).Delete(&entities.CategoriesOfTutor{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("salaryinfos").Where("id_category = ?", id).Delete(&entities.Salaryinfo{}); err.Error != nil {
+		return err.Error
+	}
+
+	if err := db.connection.Table("categories").Delete(&entities.Category{}, id); err.Error != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // FindAllCategory implements CategoryRepository

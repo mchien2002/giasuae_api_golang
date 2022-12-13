@@ -104,6 +104,7 @@ func main() {
 		newClassRoutes.POST("/index", newClassController.InsertNewClass)
 		newClassRoutes.POST("/edit", newClassController.UpdateNewClass)
 		newClassRoutes.GET("/id", newClassController.FindByID)
+		newClassRoutes.POST("/remove", newClassController.DeleteNewClass)
 	}
 
 	postRoutes := r.Group("v1/post")
@@ -137,6 +138,8 @@ func main() {
 		tutorRoutes.GET("/index", tutorController.FindAllTutor)
 		tutorRoutes.POST("/index", tutorController.InsertTutor)
 		tutorRoutes.GET("/id", tutorController.FindByID)
+		tutorRoutes.POST("/remove", tutorController.DeleteTutor)
+		tutorRoutes.POST("/edit", tutorController.UpdateTutor)
 	}
 
 	r.Run()

@@ -24,7 +24,7 @@ func (db *subjectConnection) DeleteSubject(id int) error {
 		return err.Error
 	}
 
-	if err := db.connection.Table("subjects_of_tutors").Where("id_subject = ?", id).Delete(&entities.SubjectsOfNewclasses{}); err.Error != nil {
+	if err := db.connection.Table("subjects_of_tutors").Where("id_subject = ?", id).Delete(&entities.SubjectsOfTutor{}); err.Error != nil {
 		return err.Error
 	}
 	if err := db.connection.Table("subjects").Delete(&entities.Subject{}, id); err.Error != nil {

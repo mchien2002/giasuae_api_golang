@@ -10,7 +10,7 @@ import (
 type NewClassRepository interface {
 	InsertNewClass(nc *entities.NewClassesReq) error
 	UpdateNewClass(nc *entities.NewClassesReq) error
-	DeleteNewClass(nc *entities.NewclassesDetail) error
+	DeleteNewClass(id int) error
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 }
@@ -20,8 +20,21 @@ type newClassConnection struct {
 }
 
 // DeleteNewClass implements NewClassRepository
-func (db *newClassConnection) DeleteNewClass(nc *entities.NewclassesDetail) error {
-	panic("unimplemented")
+func (db *newClassConnection) DeleteNewClass(id int) error {
+	if err := db.connection.Table("classes_of_newclasses").Where("id_newclass = ?", id).Delete(&entities.ClassesOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("subjects_of_newclasses").Where("id_newclass = ?", id).Delete(&entities.SubjectsOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("categories_of_newclasses").Where("id_newclass = ?", id).Delete(&entities.CategoriesOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+
+	if err := db.connection.Table("newclasses").Delete(&entities.NewClassesDefault{}, id); err.Error != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // FindAllNewClass implements NewClassRepository

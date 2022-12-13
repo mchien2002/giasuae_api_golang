@@ -39,7 +39,20 @@ func (ctrl *categoryController) FilterCategorry(context *gin.Context) {
 
 // DeleteCategory implements CategoryController
 func (ctrl *categoryController) DeleteCategory(context *gin.Context) {
-	panic("unimplemented")
+	id, err := strconv.ParseUint(context.Query("id"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không có danh mục được tìm thấy", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	err2 := ctrl.CategoryService.DeleteCategory(int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Xóa danh mục thất bại", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FindAllCategory implements CategoryController

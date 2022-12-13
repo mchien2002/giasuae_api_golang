@@ -17,10 +17,23 @@ type NewClassController interface {
 	DeleteNewClass(context *gin.Context)
 	FindAllNewClass(context *gin.Context)
 	FindByID(context *gin.Context)
+	FilterNewClass(context *gin.Context)
 }
 
 type newClassController struct {
 	NewClassService services.NewClassService
+}
+
+// FilterNewClass implements NewClassController
+func (ctrl *newClassController) FilterNewClass(context *gin.Context) {
+	var newclasses []entities.NewclasssesSet
+	subID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
+	classID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
+	cateID, _ := strconv.ParseInt(context.Query("subID"), 0, 0)
+
+	newclasses = ctrl.NewClassService.FilterNewClass(subID, classID, cateID)
+	res := helper.BuildResponse(true, "OK", newclasses)
+	context.JSON(http.StatusOK, res)
 }
 
 // DeleteNewClass implements NewClassController

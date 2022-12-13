@@ -13,10 +13,18 @@ type NewClassRepository interface {
 	DeleteNewClass(id int) error
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
+	FilterNewClass(value ...interface{}) []entities.NewclasssesSet
 }
 
 type newClassConnection struct {
 	connection *gorm.DB
+}
+
+// FilterNewClass implements NewClassRepository
+func (db *newClassConnection) FilterNewClass(value ...interface{}) []entities.NewclasssesSet {
+	var newclasses []entities.NewclasssesSet
+	db.connection.Table("newclasses").Joins("INNER JOIN subjects_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM subjects_of_newclasses WHERE subjects_of_newclasses.id_subject = ?) OR ? = 0 ", value[0], value[0]).Select(queyGetAllNewClass()).Joins("INNER JOIN classes_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM classes_of_newclasses WHERE classes_of_newclasses.id_class = ?) OR ? = 0 ", value[1], value[1]).Select(queyGetAllNewClass()).Joins("INNER JOIN categories_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM categories_of_newclasses WHERE categories_of_newclasses.id_category = ?) OR ? = 0 ", value[0], value[0]).Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
+	return newclasses
 }
 
 // DeleteNewClass implements NewClassRepository
@@ -40,49 +48,7 @@ func (db *newClassConnection) DeleteNewClass(id int) error {
 // FindAllNewClass implements NewClassRepository
 func (db *newClassConnection) FindAllNewClass() []entities.NewclasssesSet {
 	var newclasses []entities.NewclasssesSet
-	db.connection.Table("newclasses").Select(`newclasses.id,
-	newclasses.address,
-	newclasses.district,
-	newclasses.sobuoi,
-	newclasses.time,
-	newclasses.salary,
-	newclasses.require,
-	newclasses.status,
-	newclasses.contact,
-	newclasses.created_at,
-	(SELECT 
-		GROUP_CONCAT((SELECT c.name
-			FROM
-				classes c
-			WHERE
-				(c.id = ncc.id_class))
-			SEPARATOR ', ')
-		FROM
-			classes_of_newclasses ncc
-		WHERE
-			(ncc.id_newclass = newclasses.id)) AS classes,
-	(SELECT 
-		GROUP_CONCAT((SELECT s.name
-			FROM
-				subjects s
-			WHERE
-				(s.id = ncs.id_subject))
-			SEPARATOR ', ')
-		FROM
-			subjects_of_newclasses ncs
-		WHERE
-			(ncs.id_newclass = newclasses.id)) AS subjects,
-	(SELECT 
-		GROUP_CONCAT((SELECT ctg.name
-			FROM
-				categories ctg
-			WHERE
-				(ctg.id = ncctg.id_category))
-			SEPARATOR ', ')
-		FROM
-			categories_of_newclasses ncctg
-		WHERE
-			(ncctg.id_newclass = newclasses.id)) AS categories`).Group("newclasses.id").Find(&newclasses)
+	db.connection.Table("newclasses").Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
 	return newclasses
 }
 
@@ -204,4 +170,50 @@ func delListClassOfNC(db *newClassConnection, ncId int) {
 }
 func delListCategoryOfNC(db *newClassConnection, ncId int) {
 	db.connection.Table("categories_of_newclasses").Where("id_newclass = ?", ncId).Delete(&entities.CategoriesOfNewclasses{})
+}
+
+func queyGetAllNewClass() string {
+	return `newclasses.id,
+	newclasses.address,
+	newclasses.district,
+	newclasses.sobuoi,
+	newclasses.time,
+	newclasses.salary,
+	newclasses.require,
+	newclasses.status,
+	newclasses.contact,
+	newclasses.created_at,
+	(SELECT 
+		GROUP_CONCAT((SELECT c.name
+			FROM
+				classes c
+			WHERE
+				(c.id = ncc.id_class))
+			SEPARATOR ', ')
+		FROM
+			classes_of_newclasses ncc
+		WHERE
+			(ncc.id_newclass = newclasses.id)) AS classes,
+	(SELECT 
+		GROUP_CONCAT((SELECT s.name
+			FROM
+				subjects s
+			WHERE
+				(s.id = ncs.id_subject))
+			SEPARATOR ', ')
+		FROM
+			subjects_of_newclasses ncs
+		WHERE
+			(ncs.id_newclass = newclasses.id)) AS subjects,
+	(SELECT 
+		GROUP_CONCAT((SELECT ctg.name
+			FROM
+				categories ctg
+			WHERE
+				(ctg.id = ncctg.id_category))
+			SEPARATOR ', ')
+		FROM
+			categories_of_newclasses ncctg
+		WHERE
+			(ncctg.id_newclass = newclasses.id)) AS categories`
 }

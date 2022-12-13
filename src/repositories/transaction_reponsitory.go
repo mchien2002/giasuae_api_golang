@@ -10,10 +10,18 @@ type TransRepository interface {
 	InsertTrans(trans *entities.TransactionhistoriesReq) error
 	FindAllTrans() []entities.Transactionhistories
 	FindByIDAcc(id int) entities.Transactionhistories
+	FilterTrans(key interface{}) []entities.Transactionhistories
 }
 
 type transConnection struct {
 	connection *gorm.DB
+}
+
+// FilterTrans implements TransRepository
+func (db *transConnection) FilterTrans(key interface{}) []entities.Transactionhistories {
+	var transs []entities.Transactionhistories
+	db.connection.Table("transactionhistories").Select("trans.id, trans.amount, trans.content, trans.status, trans.created_at, accounts.username AS id_account ").Joins("trans left join accounts on accounts.id = trans.id_account").Where("trans.id LIKE ? OR trans.amount LIKE ? OR trans.content LIKE ? OR trans.status LIKE ? OR trans.created_at LIKE ? OR accounts.username LIKE ? ", key, key, key, key, key, key).Find(&transs)
+	return transs
 }
 
 // FindAllTrans implements TransRepository

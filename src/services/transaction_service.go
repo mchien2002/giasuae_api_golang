@@ -9,9 +9,15 @@ type TransService interface {
 	InsertTrans(trans *entities.TransactionhistoriesReq) error
 	FindAllTrans() []entities.Transactionhistories
 	FindByIDAcc(id int) entities.Transactionhistories
+	FilterTrans(key interface{}) []entities.Transactionhistories
 }
 type transService struct {
 	TransRepository repositories.TransRepository
+}
+
+// FilterTrans implements TransService
+func (svc *transService) FilterTrans(key interface{}) []entities.Transactionhistories {
+	return svc.TransRepository.FilterTrans(key)
 }
 
 // FindAllTrans implements TransService

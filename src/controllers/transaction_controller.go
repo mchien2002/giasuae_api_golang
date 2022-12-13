@@ -15,10 +15,20 @@ type TransController interface {
 	InsertTrans(context *gin.Context)
 	FindAllTrans(context *gin.Context)
 	FindByIDAcc(context *gin.Context)
+	FilterTrans(context *gin.Context)
 }
 
 type transController struct {
 	TransService services.TransService
+}
+
+// FilterTrans implements TransController
+func (ctrl *transController) FilterTrans(context *gin.Context) {
+	key := context.Query("key")
+	key = "%" + key + "%"
+	var trans []entities.Transactionhistories = ctrl.TransService.FilterTrans(key)
+	res := helper.BuildResponse(true, "OK", trans)
+	context.JSON(http.StatusOK, res)
 }
 
 // FindAllTrans implements TransController

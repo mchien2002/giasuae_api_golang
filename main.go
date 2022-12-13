@@ -122,6 +122,7 @@ func main() {
 		transRoutes.GET("/index", transController.FindAllTrans)
 		transRoutes.POST("/index", transController.InsertTrans)
 		transRoutes.POST("/id", transController.FindByIDAcc)
+		transRoutes.GET("/filter", transController.FilterTrans)
 	}
 
 	salRoutes := r.Group("v1/salaryinfo")

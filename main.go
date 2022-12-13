@@ -68,14 +68,15 @@ func main() {
 		subjectRoutes.POST("/index", middleware.AuthorJWT(jwtService), subjectController.InsertSubject)
 		subjectRoutes.GET("/id", subjectController.FindByID)
 		subjectRoutes.POST("/edit", middleware.AuthorJWT(jwtService), subjectController.UpdateSubject)
+		subjectRoutes.POST("/remove", subjectController.DeleteSubject)
 	}
 
 	classRoutes := r.Group("v1/class")
 	{
 		classRoutes.GET("/index", classController.FindAllClass)
 		classRoutes.POST("/index", classController.InsertClass)
-		classRoutes.POST("/remove", classController.InsertClass)
-		classRoutes.POST("/edit", classController.InsertClass)
+		classRoutes.POST("/remove", classController.DeleteClass)
+		classRoutes.POST("/edit", classController.UpdateClass)
 		classRoutes.GET("/id", classController.FindByID)
 	}
 

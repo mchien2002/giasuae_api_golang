@@ -9,7 +9,7 @@ import (
 type ClassRepository interface {
 	InsertClass(c *entities.Class) error
 	UpdateClass(c *entities.Class) error
-	DeleteClass(c *entities.Class) error
+	DeleteClass(id int) error
 	FindAllClass() []entities.Class
 	FindByID(id int) entities.Class
 }
@@ -19,8 +19,18 @@ type classConnection struct {
 }
 
 // DeleteClass implements ClassRepository
-func (db *classConnection) DeleteClass(c *entities.Class) error {
-	panic("unimplemented")
+func (db *classConnection) DeleteClass(id int) error {
+	if err := db.connection.Table("classes_of_newclasses").Where("id_class = ?", id).Delete(&entities.ClassesOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+
+	if err := db.connection.Table("classes_of_tutors").Where("id_class = ?", id).Delete(&entities.ClassesOfTutor{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("classes").Delete(&entities.Class{}, id); err.Error != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // FindAllClass implements ClassRepository

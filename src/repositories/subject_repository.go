@@ -9,7 +9,7 @@ import (
 type SubjectRepository interface {
 	InsertSubject(s *entities.Subject) error
 	UpdateSubject(s *entities.Subject) error
-	DeleteSubject(s *entities.Subject) error
+	DeleteSubject(id int) error
 	FindAllSubject() []entities.Subject
 	FindByID(id int) entities.Subject
 }
@@ -19,8 +19,18 @@ type subjectConnection struct {
 }
 
 // DeleteSubject implements SubjectRepository
-func (db *subjectConnection) DeleteSubject(s *entities.Subject) error {
-	panic("unimplemented")
+func (db *subjectConnection) DeleteSubject(id int) error {
+	if err := db.connection.Table("subjects_of_newclasses").Where("id_subject = ?", id).Delete(&entities.SubjectsOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+
+	if err := db.connection.Table("subjects_of_tutors").Where("id_subject = ?", id).Delete(&entities.SubjectsOfNewclasses{}); err.Error != nil {
+		return err.Error
+	}
+	if err := db.connection.Table("subjects").Delete(&entities.Subject{}, id); err.Error != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // FindAllSubject implements SubjectRepository

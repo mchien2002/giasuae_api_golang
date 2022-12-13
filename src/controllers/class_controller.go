@@ -25,7 +25,20 @@ type classController struct {
 
 // DeleteClass implements ClassController
 func (ctrl *classController) DeleteClass(context *gin.Context) {
-	panic("unimplemented")
+	id, err := strconv.ParseUint(context.Query("id"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không có lớp học được tìm thấy", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	err2 := ctrl.ClassService.DeleteClass(int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Xóa lớp học thất bại", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FindAllClass implements ClassController

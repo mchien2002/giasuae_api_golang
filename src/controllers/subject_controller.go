@@ -24,8 +24,21 @@ type subjectController struct {
 }
 
 // DeleteSubject implements SubjectController
-func (*subjectController) DeleteSubject(context *gin.Context) {
-	panic("unimplemented")
+func (ctrl *subjectController) DeleteSubject(context *gin.Context) {
+	id, err := strconv.ParseUint(context.Query("id"), 0, 0)
+	if err != nil {
+		res := helper.BuildResponseError("Không có môn học được tìm thấy", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	err2 := ctrl.SubjectService.DeleteSubject(int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Xóa môn học thất bại", err.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FindAllSubject implements SubjectController

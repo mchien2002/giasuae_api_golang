@@ -8,7 +8,7 @@ import (
 type SubjectService interface {
 	InsertSubject(s *entities.Subject) error
 	UpdateSubject(s *entities.Subject) error
-	DeleteSubject(s *entities.Subject)
+	DeleteSubject(id int) error
 	FindAllSubject() []entities.Subject
 	FindByID(id int) entities.Subject
 }
@@ -17,8 +17,8 @@ type subjectService struct {
 }
 
 // DeleteSubject implements SubjectService
-func (*subjectService) DeleteSubject(s *entities.Subject) {
-	panic("unimplemented")
+func (svc *subjectService) DeleteSubject(id int) error {
+	return svc.SubjectRepository.DeleteSubject(id)
 }
 
 // FindAllSubject implements SubjectService

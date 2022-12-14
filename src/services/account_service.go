@@ -11,7 +11,7 @@ type AccountService interface {
 	DeleteAccount(acc *entities.Account)
 	FindAllAccount() []entities.Account
 	FindByID(id int) entities.Account
-	FilterAccount(username string) []entities.Account
+	FilterAccount(username string, isTutor int) []entities.Account
 	UpdatePassword(pass string, id int) error
 }
 type accountService struct {
@@ -24,8 +24,8 @@ func (*accountService) UpdatePassword(pass string, id int) error {
 }
 
 // FilterAccount implements AccountService
-func (svc *accountService) FilterAccount(username string) []entities.Account {
-	return svc.AccountReponsitory.FilterAccount(username)
+func (svc *accountService) FilterAccount(username string, isTutor int) []entities.Account {
+	return svc.AccountReponsitory.FilterAccount(username, isTutor)
 }
 
 // DeleteAccount implements AccountService

@@ -43,8 +43,9 @@ func (ctrl *accountController) UpdatePassword(context *gin.Context) {
 // FilterAccount implements AccountController
 func (ctrl *accountController) FilterAccount(context *gin.Context) {
 	username := "%" + context.Query("username") + "%"
+	isTutor, _ := strconv.ParseInt(context.Query("isTutor"), 0, 0)
 
-	var acc []entities.Account = ctrl.AccountService.FilterAccount(username)
+	var acc []entities.Account = ctrl.AccountService.FilterAccount(username, int(isTutor))
 	res := helper.BuildResponse(true, "OK", acc)
 	context.JSON(http.StatusOK, res)
 }

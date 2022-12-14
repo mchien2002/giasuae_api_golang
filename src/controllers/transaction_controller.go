@@ -68,7 +68,7 @@ func (ctrl *transController) InsertTrans(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, res)
 		return
 	}
-	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	res := helper.BuildResponse(true, "OK", trans)
 	context.JSON(http.StatusOK, res)
 }
 

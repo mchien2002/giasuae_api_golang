@@ -38,7 +38,7 @@ func (svc *classService) InsertClass(c *entities.Class) error {
 
 // UpdateClass implements ClassService
 func (svc *classService) UpdateClass(c *entities.Class) error {
-	panic("unimplemented")
+	return svc.ClassRepository.UpdateClass(c)
 }
 
 func NewClassITService(classRepo repositories.ClassRepository) ClassService {

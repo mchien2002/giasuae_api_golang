@@ -11,7 +11,7 @@ type NewClassRepository interface {
 	InsertNewClass(nc *entities.NewClassesReq) error
 	UpdateNewClass(nc *entities.NewClassesReq) error
 	DeleteNewClass(id int) error
-	FindAllNewClass() []entities.NewclasssesSet
+	FindAllNewClass(page int, pagesize int) []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 	FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet
 	UpdateStatusNewClass(status int, id int) error
@@ -23,7 +23,7 @@ type newClassConnection struct {
 
 // UpdateStatusNewClass implements NewClassRepository
 func (db *newClassConnection) UpdateStatusNewClass(status int, id int) error {
-err := db.connection.Table("newclasses").Where("id = ?", id).Update("status", status)
+	err := db.connection.Table("newclasses").Where("id = ?", id).Update("status", status)
 	if err.Error != nil {
 		return err.Error
 	}
@@ -60,9 +60,9 @@ func (db *newClassConnection) DeleteNewClass(id int) error {
 }
 
 // FindAllNewClass implements NewClassRepository
-func (db *newClassConnection) FindAllNewClass() []entities.NewclasssesSet {
+func (db *newClassConnection) FindAllNewClass(page int, pagesize int) []entities.NewclasssesSet {
 	var newclasses []entities.NewclasssesSet
-	db.connection.Table("newclasses").Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
+	db.connection.Limit(pagesize).Offset((page - 1) * pagesize).Table("newclasses").Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
 	return newclasses
 }
 

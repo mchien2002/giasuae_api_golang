@@ -72,7 +72,10 @@ func (ctrl *newClassController) DeleteNewClass(context *gin.Context) {
 
 // FindAllNewClass implements NewClassController
 func (ctrl *newClassController) FindAllNewClass(context *gin.Context) {
-	var newclasses []entities.NewclasssesSet = ctrl.NewClassService.FindAllNewClass()
+	page, _ := strconv.ParseInt(context.Query("page"), 0, 0)
+	pagesize, _ := strconv.ParseInt(context.Query("pagesize"), 0, 0)
+
+	var newclasses []entities.NewclasssesSet = ctrl.NewClassService.FindAllNewClass(int(page), int(pagesize))
 	res := helper.BuildResponse(true, "OK", newclasses)
 	context.JSON(http.StatusOK, res)
 }

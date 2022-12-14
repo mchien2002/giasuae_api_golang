@@ -9,7 +9,7 @@ type NewClassService interface {
 	InsertNewClass(nc *entities.NewClassesReq) error
 	UpdateNewClass(nc *entities.NewClassesReq) error
 	DeleteNewClass(id int) error
-	FindAllNewClass() []entities.NewclasssesSet
+	FindAllNewClass(page int, pagesize int) []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 	FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet
 	UpdateStatusNewClass(status int, id int) error
@@ -19,7 +19,7 @@ type newClassService struct {
 }
 
 // UpdateStatusNewClass implements NewClassService
-func (svc*newClassService) UpdateStatusNewClass(status int, id int) error {
+func (svc *newClassService) UpdateStatusNewClass(status int, id int) error {
 	return svc.NewClassRepository.UpdateStatusNewClass(status, id)
 }
 
@@ -34,8 +34,8 @@ func (svc *newClassService) DeleteNewClass(id int) error {
 }
 
 // FindAllNewClass implements NewClassService
-func (svc *newClassService) FindAllNewClass() []entities.NewclasssesSet {
-	return svc.NewClassRepository.FindAllNewClass()
+func (svc *newClassService) FindAllNewClass(page int, pagesize int) []entities.NewclasssesSet {
+	return svc.NewClassRepository.FindAllNewClass(page, pagesize)
 }
 
 // FindByID implements NewClassService

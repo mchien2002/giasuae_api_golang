@@ -39,7 +39,7 @@ func (db *accountReponsitory) UpdatePassword(pass string, id int) error {
 // FilterAccount implements AccountReponsitory
 func (db *accountReponsitory) FilterAccount(username string) []entities.Account {
 	var account []entities.Account
-	db.connection.Table("accounts").Where("username LIKE ?", username).Scan(&account)
+	db.connection.Table("accounts").Where("username LIKE ? AND role <> 0", username).Scan(&account)
 	return account
 }
 
@@ -74,7 +74,7 @@ func (db *accountReponsitory) DeleteAccount(acc *entities.Account) {
 // FindAllAccount implements AccountReponsitory
 func (db *accountReponsitory) FindAllAccount() []entities.Account {
 	var accs []entities.Account
-	db.connection.Find(&accs)
+	db.connection.Where("role <> 0").Find(&accs)
 	return accs
 }
 

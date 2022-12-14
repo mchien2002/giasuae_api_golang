@@ -96,6 +96,7 @@ func main() {
 		accountRoutes.POST("/remove", accountController.DeleteAccount)
 		accountRoutes.POST("/edit", accountController.UpdateAccount)
 		accountRoutes.GET("/filter", accountController.FilterAccount)
+		accountRoutes.POST("/password", accountController.UpdatePassword)
 	}
 
 	newClassRoutes := r.Group("v1/new_class")

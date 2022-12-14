@@ -18,10 +18,26 @@ type AccountController interface {
 	FindAllAccount(context *gin.Context)
 	FindByID(context *gin.Context)
 	FilterAccount(context *gin.Context)
+	UpdatePassword(context *gin.Context)
 }
 
 type accountController struct {
 	AccountService services.AccountService
+}
+
+// UpdatePassword implements AccountController
+func (ctrl *accountController) UpdatePassword(context *gin.Context) {
+	id, _ := strconv.ParseUint(context.Query("id"), 0, 0)
+	pass := context.Query("password")
+
+	err2 := ctrl.AccountService.UpdatePassword(pass, int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Đổi mật khẩu thật bại", err2.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FilterAccount implements AccountController

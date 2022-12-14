@@ -19,10 +19,21 @@ type AccountReponsitory interface {
 	VerifyCredential(username string) interface{}
 	FindByID(id int) entities.Account
 	FilterAccount(username string) []entities.Account
+	UpdatePassword(pass string, id int) error
 }
 
 type accountReponsitory struct {
 	connection *gorm.DB
+}
+
+// UpdatePassword implements AccountReponsitory
+func (db *accountReponsitory) UpdatePassword(pass string, id int) error {
+	pass = hashPass([]byte(pass))
+	err := db.connection.Table("accounts").Where("id = ?", id).Update("password", pass)
+	if err.Error != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // FilterAccount implements AccountReponsitory

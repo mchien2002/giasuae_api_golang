@@ -12,9 +12,15 @@ type AccountService interface {
 	FindAllAccount() []entities.Account
 	FindByID(id int) entities.Account
 	FilterAccount(username string) []entities.Account
+	UpdatePassword(pass string, id int) error
 }
 type accountService struct {
 	AccountReponsitory repositories.AccountReponsitory
+}
+
+// UpdatePassword implements AccountService
+func (*accountService) UpdatePassword(pass string, id int) error {
+	panic("unimplemented")
 }
 
 // FilterAccount implements AccountService

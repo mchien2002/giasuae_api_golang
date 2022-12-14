@@ -28,7 +28,7 @@ type postController struct {
 func (ctrl *postController) FilterPost(context *gin.Context) {
 	types, _ := strconv.ParseInt(context.Query("type"), 0, 0)
 	page, _ := strconv.ParseInt(context.Query("page"), 0, 0)
-	pageSize, _ := strconv.ParseInt(context.Query("pageSize"), 0, 0)
+	pageSize, _ := strconv.ParseInt(context.Query("pagesize"), 0, 0)
 
 	var posts []entities.Post = ctrl.PostService.FilterPost(int(types), int(page), int(pageSize))
 	res := helper.BuildResponse(true, "OK", posts)

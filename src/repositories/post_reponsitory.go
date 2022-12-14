@@ -12,7 +12,7 @@ type PostRepository interface {
 	DeletePost(id int) error
 	FindAllPost() []entities.Post
 	FindByID(id int) entities.Post
-	FilterPost(typeID int) []entities.Post
+	FilterPost(typeID int, page int, pageSize int) []entities.Post
 }
 
 type postConnection struct {
@@ -20,9 +20,9 @@ type postConnection struct {
 }
 
 // FilterPost implements PostRepository
-func (db *postConnection) FilterPost(typeID int) []entities.Post {
+func (db *postConnection) FilterPost(typeID int, page int, pageSize int) []entities.Post {
 	var posts []entities.Post
-	db.connection.Where("type = ?", typeID).Find(&posts)
+	db.connection.Limit(pageSize).Offset((page-1)*pageSize).Where("type = ?", typeID).Find(&posts)
 	return posts
 }
 

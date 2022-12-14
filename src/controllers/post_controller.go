@@ -26,13 +26,11 @@ type postController struct {
 
 // FilterPost implements PostController
 func (ctrl *postController) FilterPost(context *gin.Context) {
-	id, err := strconv.ParseInt(context.Query("type"), 0, 0)
-	if err != nil {
-		res := helper.BuildResponseError("Không tìm thấy id", err.Error(), helper.EmptyObjec{})
-		context.JSON(http.StatusBadRequest, res)
-		return
-	}
-	var posts []entities.Post = ctrl.PostService.FilterPost(int(id))
+	types, _ := strconv.ParseInt(context.Query("type"), 0, 0)
+	page, _ := strconv.ParseInt(context.Query("page"), 0, 0)
+	pageSize, _ := strconv.ParseInt(context.Query("pageSize"), 0, 0)
+
+	var posts []entities.Post = ctrl.PostService.FilterPost(int(types), int(page), int(pageSize))
 	res := helper.BuildResponse(true, "OK", posts)
 	context.JSON(http.StatusOK, res)
 }

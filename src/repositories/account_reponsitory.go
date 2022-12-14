@@ -18,7 +18,7 @@ type AccountReponsitory interface {
 	FindAllAccount() []entities.Account
 	VerifyCredential(username string) interface{}
 	FindByID(id int) entities.Account
-	FilterAccount(value ...interface{}) []entities.Account
+	FilterAccount(username string) []entities.Account
 }
 
 type accountReponsitory struct {
@@ -26,9 +26,9 @@ type accountReponsitory struct {
 }
 
 // FilterAccount implements AccountReponsitory
-func (db *accountReponsitory) FilterAccount(value ...interface{}) []entities.Account {
+func (db *accountReponsitory) FilterAccount(username string) []entities.Account {
 	var account []entities.Account
-	db.connection.Table("accounts").Where("role = ?", value[0]).Scan(&account)
+	db.connection.Table("accounts").Where("username LIKE ?", username).Scan(&account)
 	return account
 }
 

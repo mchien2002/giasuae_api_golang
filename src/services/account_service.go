@@ -11,15 +11,15 @@ type AccountService interface {
 	DeleteAccount(acc *entities.Account)
 	FindAllAccount() []entities.Account
 	FindByID(id int) entities.Account
-	FilterAccount(value ...interface{}) []entities.Account
+	FilterAccount(username string) []entities.Account
 }
 type accountService struct {
 	AccountReponsitory repositories.AccountReponsitory
 }
 
 // FilterAccount implements AccountService
-func (svc *accountService) FilterAccount(value ...interface{}) []entities.Account {
-	return svc.AccountReponsitory.FilterAccount(value)
+func (svc *accountService) FilterAccount(username string) []entities.Account {
+	return svc.AccountReponsitory.FilterAccount(username)
 }
 
 // DeleteAccount implements AccountService

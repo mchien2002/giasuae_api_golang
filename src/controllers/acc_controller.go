@@ -26,8 +26,9 @@ type accountController struct {
 
 // FilterAccount implements AccountController
 func (ctrl *accountController) FilterAccount(context *gin.Context) {
-	role, _ := strconv.ParseUint(context.Query("role"), 0, 0)
-	var acc []entities.Account = ctrl.AccountService.FilterAccount(int(role))
+	username := "%" + context.Query("username") + "%"
+
+	var acc []entities.Account = ctrl.AccountService.FilterAccount(username)
 	res := helper.BuildResponse(true, "OK", acc)
 	context.JSON(http.StatusOK, res)
 }

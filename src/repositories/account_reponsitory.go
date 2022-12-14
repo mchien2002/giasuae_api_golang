@@ -18,7 +18,7 @@ type AccountReponsitory interface {
 	FindAllAccount() []entities.Account
 	VerifyCredential(username string) interface{}
 	FindByID(id int) entities.Account
-	FilterAccount(username string) []entities.Account
+	FilterAccount(username string, isTutor int) []entities.Account
 	UpdatePassword(pass string, id int) error
 }
 
@@ -37,8 +37,12 @@ func (db *accountReponsitory) UpdatePassword(pass string, id int) error {
 }
 
 // FilterAccount implements AccountReponsitory
-func (db *accountReponsitory) FilterAccount(username string) []entities.Account {
+func (db *accountReponsitory) FilterAccount(username string, isTutor int) []entities.Account {
 	var account []entities.Account
+	if isTutor == 1 {
+		db.connection.Table("accounts").Where("accounts.id <> (SELECT tutors.id_account FROM tutors)").Scan(&account)
+		return account
+	}
 	db.connection.Table("accounts").Where("username LIKE ? AND role <> 0", username).Scan(&account)
 	return account
 }

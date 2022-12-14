@@ -12,9 +12,15 @@ type NewClassService interface {
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 	FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet
+	UpdateStatusNewClass(status int, id int) error
 }
 type newClassService struct {
 	NewClassRepository repositories.NewClassRepository
+}
+
+// UpdateStatusNewClass implements NewClassService
+func (svc*newClassService) UpdateStatusNewClass(status int, id int) error {
+	return svc.NewClassRepository.UpdateStatusNewClass(status, id)
 }
 
 // FilterNewClass implements NewClassService

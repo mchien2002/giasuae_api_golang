@@ -14,20 +14,30 @@ type NewClassRepository interface {
 	FindAllNewClass() []entities.NewclasssesSet
 	FindByID(id int) entities.NewclassesDetail
 	FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet
+	UpdateStatusNewClass(status int, id int) error
 }
 
 type newClassConnection struct {
 	connection *gorm.DB
 }
 
+// UpdateStatusNewClass implements NewClassRepository
+func (db *newClassConnection) UpdateStatusNewClass(status int, id int) error {
+err := db.connection.Table("newclasses").Where("id = ?", id).Update("status = ?", status)
+	if err.Error != nil {
+		return err.Error
+	}
+	return nil
+}
+
 // FilterNewClass implements NewClassRepository
 func (db *newClassConnection) FilterNewClass(subID int, classID int, cateID int) []entities.NewclasssesSet {
 	var newclasses []entities.NewclasssesSet
 	db.connection.Table("newclasses").
-	Joins("INNER JOIN subjects_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM subjects_of_newclasses WHERE subjects_of_newclasses.id_subject = ?) OR ? = 0 ", subID, subID).
-	Joins("INNER JOIN classes_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM classes_of_newclasses WHERE classes_of_newclasses.id_class = ?) OR ? = 0 ", classID, classID).
-	Joins("INNER JOIN categories_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM categories_of_newclasses WHERE categories_of_newclasses.id_category = ?) OR ? = 0 ", cateID, cateID).
-	Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
+		Joins("INNER JOIN subjects_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM subjects_of_newclasses WHERE subjects_of_newclasses.id_subject = ?) OR ? = 0 ", subID, subID).
+		Joins("INNER JOIN classes_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM classes_of_newclasses WHERE classes_of_newclasses.id_class = ?) OR ? = 0 ", classID, classID).
+		Joins("INNER JOIN categories_of_newclasses ON newclasses.id IN (SELECT id_newclass FROM categories_of_newclasses WHERE categories_of_newclasses.id_category = ?) OR ? = 0 ", cateID, cateID).
+		Select(queyGetAllNewClass()).Group("newclasses.id").Find(&newclasses)
 	return newclasses
 }
 

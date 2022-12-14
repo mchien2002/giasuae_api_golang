@@ -18,10 +18,26 @@ type NewClassController interface {
 	FindAllNewClass(context *gin.Context)
 	FindByID(context *gin.Context)
 	FilterNewClass(context *gin.Context)
+	UpdateStatusNewClass(context *gin.Context)
 }
 
 type newClassController struct {
 	NewClassService services.NewClassService
+}
+
+// UpdateStatusNewClass implements NewClassController
+func (ctrl *newClassController) UpdateStatusNewClass(context *gin.Context) {
+	id, _ := strconv.ParseUint(context.Query("id"), 0, 0)
+	status, _ := strconv.ParseUint(context.Query("status"), 0, 0)
+
+	err2 := ctrl.NewClassService.UpdateStatusNewClass(int(status), int(id))
+	if err2 != nil {
+		res := helper.BuildResponseError("Cập nhật trạng thái thất bại", err2.Error(), helper.EmptyObjec{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+	res := helper.BuildResponse(true, "OK", helper.EmptyObjec{})
+	context.JSON(http.StatusOK, res)
 }
 
 // FilterNewClass implements NewClassController

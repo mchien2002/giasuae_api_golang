@@ -106,6 +106,7 @@ func main() {
 		newClassRoutes.GET("/id", newClassController.FindByID)
 		newClassRoutes.POST("/remove", newClassController.DeleteNewClass)
 		newClassRoutes.GET("/filter", newClassController.FilterNewClass)
+		newClassRoutes.GET("/status", newClassController.UpdateStatusNewClass)
 	}
 
 	postRoutes := r.Group("v1/post")

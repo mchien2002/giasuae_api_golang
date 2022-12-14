@@ -23,7 +23,7 @@ type newClassConnection struct {
 
 // UpdateStatusNewClass implements NewClassRepository
 func (db *newClassConnection) UpdateStatusNewClass(status int, id int) error {
-err := db.connection.Table("newclasses").Where("id = ?", id).Update("status = ?", status)
+err := db.connection.Table("newclasses").Where("id = ?", id).Update("status", status)
 	if err.Error != nil {
 		return err.Error
 	}

@@ -16,10 +16,24 @@ type TransController interface {
 	FindAllTrans(context *gin.Context)
 	FindByIDAcc(context *gin.Context)
 	FilterTrans(context *gin.Context)
+	Statistics(context *gin.Context)
 }
 
 type transController struct {
 	TransService services.TransService
+}
+
+// Statistics implements TransController
+func (ctrl *transController) Statistics(context *gin.Context) {
+	day := context.Query("day")
+	month := context.Query("month")
+	year := context.Query("year")
+	var statistic = entities.Statistics{
+		Created_at: date_picker.FormatDataNow(),
+	}
+	ctrl.TransService.Statistics(&statistic, month, year, day)
+	res := helper.BuildResponse(true, "OK", statistic)
+	context.JSON(http.StatusOK, res)
 }
 
 // FilterTrans implements TransController

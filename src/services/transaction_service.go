@@ -10,9 +10,15 @@ type TransService interface {
 	FindAllTrans() []entities.Transactionhistories
 	FindByIDAcc(id int) entities.Transactionhistories
 	FilterTrans(key interface{}) []entities.Transactionhistories
+	Statistics(statis *entities.Statistics, month string, year string, day string)
 }
 type transService struct {
 	TransRepository repositories.TransRepository
+}
+
+// Statistics implements TransService
+func (svc *transService) Statistics(statis *entities.Statistics, month string, year string, day string) {
+	svc.TransRepository.Statistics(statis, month, year, day)
 }
 
 // FilterTrans implements TransService

@@ -6,7 +6,7 @@ import (
 )
 
 type NewClassService interface {
-	InsertNewClass(nc *entities.NewClassesReq) error
+	InsertNewClass(nc *entities.NewClassesReq) entities.NewClassesReq
 	UpdateNewClass(nc *entities.NewClassesReq) error
 	DeleteNewClass(id int) error
 	FindAllNewClass(page int, pagesize int) []entities.NewclasssesSet
@@ -44,7 +44,7 @@ func (svc *newClassService) FindByID(id int) entities.NewclassesDetail {
 }
 
 // InsertNewClass implements NewClassService
-func (svc *newClassService) InsertNewClass(nc *entities.NewClassesReq) error {
+func (svc *newClassService) InsertNewClass(nc *entities.NewClassesReq) entities.NewClassesReq {
 	return svc.NewClassRepository.InsertNewClass(nc)
 }
 

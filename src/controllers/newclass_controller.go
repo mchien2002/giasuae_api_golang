@@ -107,13 +107,8 @@ func (ctrl *newClassController) InsertNewClass(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, res)
 		return
 	}
-	err2 := ctrl.NewClassService.InsertNewClass(&nc)
-	if err2 != nil {
-		res := helper.BuildResponseError("Thêm lớp học mới thất bại", err2.Error(), helper.EmptyObjec{})
-		context.JSON(http.StatusBadRequest, res)
-		return
-	}
-	res := helper.BuildResponse(true, "OK", nil)
+	nc = ctrl.NewClassService.InsertNewClass(&nc)
+	res := helper.BuildResponse(true, "OK", nc)
 	context.JSON(http.StatusOK, res)
 }
 

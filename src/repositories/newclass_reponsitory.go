@@ -8,7 +8,7 @@ import (
 )
 
 type NewClassRepository interface {
-	InsertNewClass(nc *entities.NewClassesReq) error
+	InsertNewClass(nc *entities.NewClassesReq) entities.NewClassesReq
 	UpdateNewClass(nc *entities.NewClassesReq) error
 	DeleteNewClass(id int) error
 	FindAllNewClass(page int, pagesize int) []entities.NewclasssesSet
@@ -77,7 +77,7 @@ func (db *newClassConnection) FindByID(id int) entities.NewclassesDetail {
 }
 
 // InsertNewClass implements NewClassRepository
-func (db *newClassConnection) InsertNewClass(nc *entities.NewClassesReq) error {
+func (db *newClassConnection) InsertNewClass(nc *entities.NewClassesReq) entities.NewClassesReq {
 	var subOfNC []entities.SubjectsOfNewclasses
 	var classOfNC []entities.ClassesOfNewclasses
 	var ctgOfNC []entities.CategoriesOfNewclasses
@@ -103,7 +103,7 @@ func (db *newClassConnection) InsertNewClass(nc *entities.NewClassesReq) error {
 	db.connection.Create(&subOfNC)
 	db.connection.Create(&classOfNC)
 	db.connection.Create(&ctgOfNC)
-	return nil
+	return *nc
 }
 
 // UpdateNewClass implements NewClassRepository

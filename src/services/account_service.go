@@ -19,8 +19,8 @@ type accountService struct {
 }
 
 // UpdatePassword implements AccountService
-func (*accountService) UpdatePassword(pass string, id int) error {
-	panic("unimplemented")
+func (svc *accountService) UpdatePassword(pass string, id int) error {
+	return svc.AccountReponsitory.UpdatePassword(pass, id)
 }
 
 // FilterAccount implements AccountService

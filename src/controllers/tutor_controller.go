@@ -110,7 +110,7 @@ func (ctrl *tutorController) InsertTutor(context *gin.Context) {
 	}
 	err2 := ctrl.TutorService.InsertTutor(&tutor)
 	if err2 != nil {
-		res := helper.BuildResponseError(err2.Error(), err2.Error(), helper.EmptyObjec{})
+		res := helper.BuildResponseError("Mỗi tài khoản chỉ tạo được một gia sư", err2.Error(), helper.EmptyObjec{})
 		context.JSON(http.StatusBadRequest, res)
 		return
 	}

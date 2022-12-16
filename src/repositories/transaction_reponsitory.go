@@ -31,7 +31,11 @@ func (db *transConnection) Statistics(statis *entities.Statistics, month string,
 
 	db.connection.Table("newclasses").Select("COUNT(status)").Count(&numNewclass)
 	db.connection.Table("newclasses").Select("COUNT(status)").Where("status = 1").Count(&numNewclassReceived)
-	percentNewclass = float64(numNewclassReceived) / float64(numNewclass) * 100
+	if numNewclass == 0 {
+		percentNewclass = 0
+	} else {
+		percentNewclass = float64(numNewclassReceived) / float64(numNewclass) * 100
+	}
 	db.connection.Table("transactionhistories").Select("COUNT(id)").Where("created_at LIKE ?", "%"+year+"-"+month+"-"+day+"%").Count(&countTrans)
 	statis.Budget_month = int(monthType)
 	statis.Budget_year = int(yearType)

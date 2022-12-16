@@ -115,7 +115,7 @@ func (db *tutorConnection) FindByID(id int) entities.TutorDetail {
 	db.connection.Limit(1).Select("*, (SELECT accounts.username FROM accounts WHERE accounts.id = tutors.id_account) as id_account").Table("tutors").Where("id = ?", id).Scan(&tutors)
 	tutors.Subjects = getListSubjectOfTutor(db, id)
 	tutors.Classes = getListClassOfTutor(db, id)
-	tutors.Categories = getListCategoryOfTutor(db, id)
+tutors.Categories = getListCategoryOfTutor(db, id)
 	return tutors
 }
 

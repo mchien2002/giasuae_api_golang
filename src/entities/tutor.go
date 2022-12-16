@@ -14,7 +14,7 @@ type TutorDetail struct {
 	Describe      string     `json:"describe"`
 	Sobuoi        int        `json:"sobuoi"`
 	Birth_year    string     `json:"birth_year"`
-	ID_account    int        `json:"id_account"`
+	ID_account    string     `json:"id_account"`
 	Created_at    string     `json:"created_at"`
 	Classes       []Class    `json:"classes"`
 	Subjects      []Subject  `json:"subjects"`

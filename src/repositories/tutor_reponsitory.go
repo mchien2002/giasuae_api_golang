@@ -112,7 +112,7 @@ func (db *tutorConnection) FindAllTutor() []entities.TutorSet {
 // FindByID implements TutorRepository
 func (db *tutorConnection) FindByID(id int) entities.TutorDetail {
 	var tutors entities.TutorDetail
-	db.connection.Limit(1).Table("tutors").Where("id = ?", id).Scan(&tutors)
+	db.connection.Limit(1).Select("*, (SELECT accounts.username FROM accounts WHERE accounts.id = tutors.id_account) as id_account").Table("tutors").Where("id = ?", id).Scan(&tutors)
 	tutors.Subjects = getListSubjectOfTutor(db, id)
 	tutors.Classes = getListClassOfTutor(db, id)
 	tutors.Categories = getListCategoryOfTutor(db, id)

@@ -40,7 +40,7 @@ func (db *accountReponsitory) UpdatePassword(pass string, id int) error {
 func (db *accountReponsitory) FilterAccount(username string, isTutor int) []entities.Account {
 	var account []entities.Account
 	if isTutor == 1 {
-		db.connection.Table("accounts").Joins("INNER JOIN tutors on tutors.id_account <>accounts.id AND accounts.role = 1").Scan(&account)
+		db.connection.Table("accounts").Where(" accounts.id  NOT IN (SELECT id FROM tutors) AND accounts.role = 1").Scan(&account)
 		return account
 	}
 	db.connection.Table("accounts").Where("username LIKE ? AND role <> 0", username).Scan(&account)
